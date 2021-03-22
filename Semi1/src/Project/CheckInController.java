@@ -14,15 +14,31 @@ public class CheckInController {
 	}
 
 	// 대여 기능 -> 리스트 추가
+	/*
+	 * public String append(CheckOut c) { String msg = "대여가 완료되었습니다.";
+	 * 
+	 * try { // 데이터를 리스트에 추가 checkouts.add(c); } catch (Exception e) {
+	 * e.printStackTrace(); msg = "대여 중 오류 발생"; }
+	 * 
+	 * return msg; }
+	 */
+
+	// 반납 기능 -> 반납 데이터 추가
 	public String append(CheckOut c) {
-		String msg = "대여가 완료되었습니다.";
+		String msg = "반납 완료";
 
 		try {
-			// 데이터를 리스트에 추가
-			checkouts.add(c);
+			for (int index = 0; index < checkouts.size(); index++) {
+				CheckOut target = checkouts.get(index);
+
+				if (target.getId() == c.getId()) { // string 값 -> equals로 비교해야 함! 연산자 사용 X
+					checkouts.set(index, c);
+					break;
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			msg = "대여 중 오류 발생";
+			msg = "반납 중 오류 발생";
 		}
 
 		return msg;
@@ -30,7 +46,7 @@ public class CheckInController {
 
 	// 수정 기능
 	public String update(CheckOut c) {
-		String msg = "대여 정보 수정이 완료되었습니다.";
+		String msg = "정보 수정이 완료되었습니다.";
 
 		try {
 			// 리스트에 있는 것 수정하기
@@ -79,11 +95,11 @@ public class CheckInController {
 			CheckOut target = checkouts.get(index);
 			switch (type) {
 			case "도서명":
-				if (target.getBook().indexOf(findStr) > -1)
+				if (target.getTitle().indexOf(findStr) > -1)
 					returnList.add(target);
 				break;
 			case "이름":
-				if (target.getPerson().indexOf(findStr) > -1)
+				if (target.getIrum().indexOf(findStr) > -1)
 					returnList.add(target);
 				break;
 

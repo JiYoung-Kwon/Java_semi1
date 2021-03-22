@@ -5,8 +5,13 @@ package Project;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckOutController {
+public class CheckInController {
 	public static List<CheckOut> checkouts = new ArrayList<CheckOut>();
+
+	// 테스트용 데이터 추가
+	public void init(CheckOut c) {
+		checkouts.add(c);
+	}
 
 	// 대여 기능 -> 리스트 추가
 	public String append(CheckOut c) {
@@ -67,15 +72,21 @@ public class CheckOutController {
 	}
 
 	// 조회 기능
-	public List<CheckOut> search(String findStr) {
+	public List<CheckOut> search(String findStr, String type) {
 		List<CheckOut> returnList = new ArrayList<CheckOut>();
 
 		for (int index = 0; index < checkouts.size(); index++) {
 			CheckOut target = checkouts.get(index);
-			if (Integer.toString(target.getId()).indexOf(findStr) > -1 || target.getBook().indexOf(findStr) > -1
-					|| target.getPerson().indexOf(findStr) > -1 || target.getDate().indexOf(findStr) > -1) {
+			switch (type) {
+			case "도서명":
+				if (target.getBook().indexOf(findStr) > -1)
+					returnList.add(target);
+				break;
+			case "이름":
+				if (target.getPerson().indexOf(findStr) > -1)
+					returnList.add(target);
+				break;
 
-				returnList.add(target);
 			}
 		}
 		return returnList;

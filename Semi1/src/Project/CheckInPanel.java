@@ -10,29 +10,28 @@ import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JComboBox;
 
-public class ReturnPanel extends JPanel {
+public class CheckInPanel extends JPanel {
 	private JButton btnNewButton;
-	private JButton btnNewButton_1;
-	private JButton btnNewButton_1_1;
 	private JButton btnNewButton_1_2;
-	private JLabel lblNewLabel_3_1;
-	private JTextField textField;
-	private JLabel lblNewLabel_3_1_1;
-	private JTextField textField_1;
-	private JLabel lblNewLabel_3;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField tfFindTitle;
+	private JTextField tfCODate;
+	private JTextField tfCIDate;
 	private JLabel lblNewLabel_5_1_1_1;
 	private JLabel lblNewLabel_5;
 	private JLabel lblNewLabel_3_2;
-	private JTextField textField_5;
+	private JTextField tfTitle;
 	private JButton btnNewButton_1_1_1_1;
 	private JLabel lblNewLabel_3_1_2;
-	private JTextField textField_6;
+	private JTextField tfIrum;
 	private JLabel lblNewLabel_3_1_1_1;
-	private JTextField textField_7;
+	private JTextField tfPhone;
 	private JButton btnNewButton_1_1_1;
 	private JLabel lblNewLabel_5_1;
 	private JLabel lblNewLabel_3_1_2_1;
@@ -40,34 +39,35 @@ public class ReturnPanel extends JPanel {
 	private JLabel lblNewLabel_5_1_1;
 	private JScrollPane scrollPane;
 	private JTable table;
-
+	private JComboBox comboBox;
 	/**
 	 * Create the panel.
 	 */
-	public ReturnPanel() {
+	public CheckInPanel() {
 		setBackground(Color.WHITE);
 		setLayout(null);
+		
+		comboBox = new JComboBox();
+		comboBox.setBackground(Color.WHITE);
+		comboBox.addItem("µµ¼­¸í");
+		comboBox.addItem("ÀÌ¸§");
+		comboBox.setBounds(32, 31, 68, 22);
+		
+		add(comboBox);
 		add(getBtnNewButton());
-		add(getBtnNewButton_1());
-		add(getBtnNewButton_1_1());
 		add(getBtnNewButton_1_2());
-		add(getLblNewLabel_3_1());
-		add(getTextField());
-		add(getLblNewLabel_3_1_1());
-		add(getTextField_1());
-		add(getLblNewLabel_3());
-		add(getTextField_2());
-		add(getTextField_3());
-		add(getTextField_4());
+		add(getTfFindTitle());
+		add(getTfCODate());
+		add(getTfCIDate());
 		add(getLblNewLabel_5_1_1_1());
 		add(getLblNewLabel_5());
 		add(getLblNewLabel_3_2());
-		add(getTextField_5());
+		add(getTfTitle());
 		add(getBtnNewButton_1_1_1_1());
 		add(getLblNewLabel_3_1_2());
-		add(getTextField_6());
+		add(getTfIrum());
 		add(getLblNewLabel_3_1_1_1());
-		add(getTextField_7());
+		add(getTfPhone());
 		add(getBtnNewButton_1_1_1());
 		add(getLblNewLabel_5_1());
 		add(getLblNewLabel_3_1_2_1());
@@ -76,39 +76,56 @@ public class ReturnPanel extends JPanel {
 		add(getScrollPane());
 
 	}
+
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+
+					// Å×½ºÆ®¿ë ´Ù¸¥ ÄÚµå °¡Á®¿À±â
+					Customer customer1 = new Customer("01020758297", "±ÇÁö¿µ", "¼ö¿ø½Ã");
+					
+					CheckInController cc = new CheckInController();
+					CheckOut k = new CheckOut();
+					k.setId(1);
+					k.setBook("¾È³çÇÏ¼¼¿ä");
+					k.setPerson(customer1.getIrum());
+					k.setPhone(customer1.getId());
+					k.setDate("20210322");
+					cc.init(k);
+
+					CheckOut z = new CheckOut();
+					z.setId(2);
+					z.setBook("¾È³ç");
+					z.setPerson(customer1.getIrum());
+					z.setPhone(customer1.getId());
+					z.setDate("20210322");
+					cc.init(z);
+
+					String findStr = tfFindTitle.getText();
+					String type = comboBox.getSelectedItem().toString();
+					List<CheckOut> list = cc.search(findStr,type);
+
+					DefaultTableModel model = (DefaultTableModel) table.getModel();
+					model.setRowCount(0);
+					for (int i = 0; i < list.size(); i++) {
+						CheckOut c = list.get(i);
+						String[] data = { Integer.toString(c.getId()), c.getBook(), c.getPerson(), c.getPhone() ,c.getDate() };
+						model.addRow(data);
+					}
+
+				}
+			});
 			btnNewButton.setForeground(Color.WHITE);
 			btnNewButton.setFont(new Font("±¼¸²", Font.PLAIN, 12));
 			btnNewButton.setBorderPainted(false);
 			btnNewButton.setBackground(new Color(153, 51, 0));
-			btnNewButton.setBounds(436, 30, 80, 23);
+			btnNewButton.setBounds(436, 31, 80, 23);
 		}
 		return btnNewButton;
 	}
-	public JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("\uAC80\uC0C9");
-			btnNewButton_1.setForeground(Color.WHITE);
-			btnNewButton_1.setFont(new Font("±¼¸²", Font.PLAIN, 12));
-			btnNewButton_1.setBorderPainted(false);
-			btnNewButton_1.setBackground(new Color(153, 51, 0));
-			btnNewButton_1.setBounds(436, 74, 80, 23);
-		}
-		return btnNewButton_1;
-	}
-	public JButton getBtnNewButton_1_1() {
-		if (btnNewButton_1_1 == null) {
-			btnNewButton_1_1 = new JButton("\uB300\uC5EC");
-			btnNewButton_1_1.setForeground(Color.WHITE);
-			btnNewButton_1_1.setFont(new Font("±¼¸²", Font.PLAIN, 12));
-			btnNewButton_1_1.setBorderPainted(false);
-			btnNewButton_1_1.setBackground(new Color(153, 51, 0));
-			btnNewButton_1_1.setBounds(368, 119, 68, 23);
-		}
-		return btnNewButton_1_1;
-	}
+
 	public JButton getBtnNewButton_1_2() {
 		if (btnNewButton_1_2 == null) {
 			btnNewButton_1_2 = new JButton("\uBC18\uB0A9");
@@ -120,74 +137,35 @@ public class ReturnPanel extends JPanel {
 		}
 		return btnNewButton_1_2;
 	}
-	public JLabel getLblNewLabel_3_1() {
-		if (lblNewLabel_3_1 == null) {
-			lblNewLabel_3_1 = new JLabel("\uC774\uB984");
-			lblNewLabel_3_1.setForeground(Color.WHITE);
-			lblNewLabel_3_1.setFont(new Font("±¼¸²", Font.PLAIN, 12));
-			lblNewLabel_3_1.setBounds(41, 78, 50, 15);
+
+	public JTextField getTfFindTitle() {
+		if (tfFindTitle == null) {
+			tfFindTitle = new JTextField();
+			tfFindTitle.setDragEnabled(true);
+			tfFindTitle.setColumns(10);
+			tfFindTitle.setBounds(116, 31, 310, 23);
 		}
-		return lblNewLabel_3_1;
+		return tfFindTitle;
 	}
-	public JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setColumns(10);
-			textField.setBounds(103, 75, 104, 23);
+
+	public JTextField getTfCODate() {
+		if (tfCODate == null) {
+			tfCODate = new JTextField();
+			tfCODate.setColumns(10);
+			tfCODate.setBounds(379, 451, 125, 23);
 		}
-		return textField;
+		return tfCODate;
 	}
-	public JLabel getLblNewLabel_3_1_1() {
-		if (lblNewLabel_3_1_1 == null) {
-			lblNewLabel_3_1_1 = new JLabel("\uC804\uD654\uBC88\uD638");
-			lblNewLabel_3_1_1.setForeground(Color.WHITE);
-			lblNewLabel_3_1_1.setFont(new Font("±¼¸²", Font.PLAIN, 12));
-			lblNewLabel_3_1_1.setBounds(219, 78, 50, 15);
+
+	public JTextField getTfCIDate() {
+		if (tfCIDate == null) {
+			tfCIDate = new JTextField();
+			tfCIDate.setColumns(10);
+			tfCIDate.setBounds(379, 484, 125, 23);
 		}
-		return lblNewLabel_3_1_1;
+		return tfCIDate;
 	}
-	public JTextField getTextField_1() {
-		if (textField_1 == null) {
-			textField_1 = new JTextField();
-			textField_1.setColumns(10);
-			textField_1.setBounds(288, 75, 125, 23);
-		}
-		return textField_1;
-	}
-	public JLabel getLblNewLabel_3() {
-		if (lblNewLabel_3 == null) {
-			lblNewLabel_3 = new JLabel("\uB3C4\uC11C\uBA85");
-			lblNewLabel_3.setForeground(Color.WHITE);
-			lblNewLabel_3.setFont(new Font("±¼¸²", Font.PLAIN, 12));
-			lblNewLabel_3.setBounds(41, 34, 50, 15);
-		}
-		return lblNewLabel_3;
-	}
-	public JTextField getTextField_2() {
-		if (textField_2 == null) {
-			textField_2 = new JTextField();
-			textField_2.setDragEnabled(true);
-			textField_2.setColumns(10);
-			textField_2.setBounds(103, 31, 310, 23);
-		}
-		return textField_2;
-	}
-	public JTextField getTextField_3() {
-		if (textField_3 == null) {
-			textField_3 = new JTextField();
-			textField_3.setColumns(10);
-			textField_3.setBounds(379, 451, 125, 23);
-		}
-		return textField_3;
-	}
-	public JTextField getTextField_4() {
-		if (textField_4 == null) {
-			textField_4 = new JTextField();
-			textField_4.setColumns(10);
-			textField_4.setBounds(379, 484, 125, 23);
-		}
-		return textField_4;
-	}
+
 	public JLabel getLblNewLabel_5_1_1_1() {
 		if (lblNewLabel_5_1_1_1 == null) {
 			lblNewLabel_5_1_1_1 = new JLabel("");
@@ -197,6 +175,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5() {
 		if (lblNewLabel_5 == null) {
 			lblNewLabel_5 = new JLabel("");
@@ -206,6 +185,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_5;
 	}
+
 	public JLabel getLblNewLabel_3_2() {
 		if (lblNewLabel_3_2 == null) {
 			lblNewLabel_3_2 = new JLabel("\uB3C4\uC11C\uBA85");
@@ -215,14 +195,16 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_3_2;
 	}
-	public JTextField getTextField_5() {
-		if (textField_5 == null) {
-			textField_5 = new JTextField();
-			textField_5.setColumns(10);
-			textField_5.setBounds(103, 418, 148, 23);
+
+	public JTextField getTfTitle() {
+		if (tfTitle == null) {
+			tfTitle =  new JTextField();
+			tfTitle.setColumns(10);
+			tfTitle.setBounds(103, 418, 148, 23);
 		}
-		return textField_5;
+		return tfTitle;
 	}
+
 	public JButton getBtnNewButton_1_1_1_1() {
 		if (btnNewButton_1_1_1_1 == null) {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
@@ -234,6 +216,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_3_1_2() {
 		if (lblNewLabel_3_1_2 == null) {
 			lblNewLabel_3_1_2 = new JLabel("\uC774\uB984");
@@ -243,14 +226,16 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2;
 	}
-	public JTextField getTextField_6() {
-		if (textField_6 == null) {
-			textField_6 = new JTextField();
-			textField_6.setColumns(10);
-			textField_6.setBounds(103, 451, 148, 23);
+
+	public JTextField getTfIrum() {
+		if (tfIrum == null) {
+			tfIrum = new JTextField();
+			tfIrum.setColumns(10);
+			tfIrum.setBounds(103, 451, 148, 23);
 		}
-		return textField_6;
+		return tfIrum;
 	}
+
 	public JLabel getLblNewLabel_3_1_1_1() {
 		if (lblNewLabel_3_1_1_1 == null) {
 			lblNewLabel_3_1_1_1 = new JLabel("\uC804\uD654\uBC88\uD638");
@@ -260,14 +245,16 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1_1;
 	}
-	public JTextField getTextField_7() {
-		if (textField_7 == null) {
-			textField_7 = new JTextField();
-			textField_7.setColumns(10);
-			textField_7.setBounds(103, 484, 148, 23);
+
+	public JTextField getTfPhone() {
+		if (tfPhone == null) {
+			tfPhone = new JTextField();
+			tfPhone.setColumns(10);
+			tfPhone.setBounds(103, 484, 148, 23);
 		}
-		return textField_7;
+		return tfPhone;
 	}
+
 	public JButton getBtnNewButton_1_1_1() {
 		if (btnNewButton_1_1_1 == null) {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
@@ -279,6 +266,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5_1() {
 		if (lblNewLabel_5_1 == null) {
 			lblNewLabel_5_1 = new JLabel("    \uC815 \uBCF4 \uC218 \uC815");
@@ -291,6 +279,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_5_1;
 	}
+
 	public JLabel getLblNewLabel_3_1_2_1() {
 		if (lblNewLabel_3_1_2_1 == null) {
 			lblNewLabel_3_1_2_1 = new JLabel("\uB300\uC5EC\uC77C\uC790");
@@ -300,6 +289,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2_1;
 	}
+
 	public JLabel getLblNewLabel_3_1_1_1_1() {
 		if (lblNewLabel_3_1_1_1_1 == null) {
 			lblNewLabel_3_1_1_1_1 = new JLabel("\uBC18\uB0A9\uC77C\uC790");
@@ -309,6 +299,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5_1_1() {
 		if (lblNewLabel_5_1_1 == null) {
 			lblNewLabel_5_1_1 = new JLabel("");
@@ -318,6 +309,7 @@ public class ReturnPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1;
 	}
+
 	public JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
@@ -326,32 +318,49 @@ public class ReturnPanel extends JPanel {
 		}
 		return scrollPane;
 	}
+
 	public JTable getTable() {
 		if (table == null) {
 			table = new JTable();
-			table.setModel(new DefaultTableModel(
-				new Object[][] {
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-					{null, null, null, null, null, null, null},
-				},
-				new String[] {
-					"NO.", "\uB3C4\uC11C\uBA85", "\uB300\uC5EC\uC790", "\uC804\uD654\uBC88\uD638", "\uB300\uC5EC\uC77C\uC790", "\uBC18\uB0A9\uC77C\uC790", "\uBC18\uB0A9\uD604\uD669"
+			DefaultTableModel model = new DefaultTableModel(
+					new Object[][] { { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null },
+							{ null, null, null, null, null, null, null }, },
+					new String[] { "NO.", "\uB3C4\uC11C\uBA85", "\uB300\uC5EC\uC790", "\uC804\uD654\uBC88\uD638",
+							"\uB300\uC5EC\uC77C\uC790", "\uBC18\uB0A9\uC77C\uC790", "\uBC18\uB0A9\uD604\uD669" });
+
+			table.setModel(model);
+			table = new JTable(model);
+
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					table.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							
+							int row = table.getSelectedRow();
+							//int col = table.getSelectedColumn();
+							
+							tfTitle.setText((String) table.getModel().getValueAt(row, 1));
+							tfIrum.setText((String) table.getModel().getValueAt(row, 2));
+							tfPhone.setText((String) table.getModel().getValueAt(row, 3));
+							tfCODate.setText((String) table.getModel().getValueAt(row, 4));
+							tfCIDate.setText((String) table.getModel().getValueAt(row, 5));
+						}
+					});
 				}
-			));
+			});
 		}
+		
+		
+		
 		return table;
 	}
 }

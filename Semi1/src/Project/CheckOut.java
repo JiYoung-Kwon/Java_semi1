@@ -12,7 +12,14 @@ public class CheckOut {
 	String date;
 	String person;
 	String book;
+	String phone;
 	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 	public int getId() {
 		return id;
 	}

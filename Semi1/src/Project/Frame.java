@@ -74,7 +74,7 @@ public class Frame extends JFrame {
 		contentPane.add(btn_menu1);
 		btn_menu1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MemberPanel Mp = new MemberPanel();
+				CustomerPanel Mp = new CustomerPanel();
 				panel1.removeAll();
 				panel1.add(Mp);
 				panel1.updateUI();

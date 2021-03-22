@@ -44,6 +44,9 @@ public class CustomerPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
+
+	boolean isSame = false;
+
 	public CustomerPanel() {
 		setBackground(Color.WHITE);
 		setLayout(null);
@@ -70,24 +73,26 @@ public class CustomerPanel extends JPanel {
 		add(getScrollPane());
 
 	}
-	public JButton getBtnNewButton() { 	//회원 정보 검색 버튼
+
+	String a = "";
+
+	public JButton getBtnNewButton() { // 회원 정보 검색 버튼
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					CustomerController cc = new CustomerController();
 					String findId = tfId.getText();
-					List<Customer>list = cc.search(findId);
-					
-					DefaultTableModel model = 
-							(DefaultTableModel)table.getModel();
+					List<Customer> list = cc.search(findId);
+
+					DefaultTableModel model = (DefaultTableModel) table.getModel();
 					model.setRowCount(0);
-					for(int i = 0; i < list.size(); i++) {
+					for (int i = 0; i < list.size(); i++) {
 						Customer c = list.get(i);
-						String [] data = {c.getIrum(),c.getId(),c.getAddress()};
+						String[] data = { c.getIrum(), c.getId(), c.getAddress() };
 						model.addRow(data);
 					}
-					
+
 				}
 			});
 			btnNewButton.setForeground(Color.WHITE);
@@ -98,30 +103,60 @@ public class CustomerPanel extends JPanel {
 		}
 		return btnNewButton;
 	}
-	public JButton getBtnNewButton_1_2() { //회원 정보 등록 버튼
+
+	public JButton getBtnNewButton_1_2() { // 회원 정보 등록 버튼
 		if (btnNewButton_1_2 == null) {
 			btnNewButton_1_2 = new JButton("\uB4F1\uB85D");
 			btnNewButton_1_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					//입력 데이터 가져오기
 					String cId = tfId.getText();
 					String cIrum = tfIrum.getText();
-					String cAddress = tfAddress.getText();				
+					String cAddress = tfAddress.getText();
 					
-					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 등록 하시겠습니까?",
-												"Confirm",JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.CLOSED_OPTION) {
+					//확인 여부 메세지 출력
+					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 등록 하시겠습니까?", "Confirm",
+							JOptionPane.YES_NO_OPTION);
+
+					if (result == JOptionPane.YES_OPTION) {
 						
-					}
-					else if(result == JOptionPane.YES_OPTION) {
-					Customer c = new Customer(cId, cIrum, cAddress);
-					CustomerController cc = new CustomerController();
-					String msg = cc.append(c);
-					JOptionPane.showMessageDialog(CustomerPanel.this, msg);
-					}
-					else {
+						//첫 번째 입력이 아닐 경우
+						if (CustomerController.customers.size() != 0) {
+							//아이디 존재 여부
+							for (int i = 0; i < CustomerController.customers.size(); i++) {
+								Customer c1 = CustomerController.customers.get(i);
+								if (c1.getId().equals(cId)) {
+									isSame = true;
+									break;
+								}
+							}
+							
+							// 아이디가 존재한다면
+							if(isSame)
+								JOptionPane.showMessageDialog(CustomerPanel.this, "이미 가입된 회원입니다.");
+							else {
+								Customer c = new Customer(cId, cIrum, cAddress);
+								CustomerController cc = new CustomerController();
+								String msg = cc.append(c);
+								JOptionPane.showMessageDialog(CustomerPanel.this, msg);
+							}
+						}
+						else {
+							Customer c = new Customer(cId, cIrum, cAddress);
+							CustomerController cc = new CustomerController();
+							String msg = cc.append(c);
+							JOptionPane.showMessageDialog(CustomerPanel.this, msg);
+						}
 						
+						DefaultTableModel model = (DefaultTableModel) table.getModel();
+						model.setRowCount(0);
+						for (int j = 0; j < CustomerController.customers.size(); j++) {
+							Customer c2 = CustomerController.customers.get(j);
+							String[] data = { c2.getIrum(), c2.getId(), c2.getAddress() };
+							model.addRow(data);								
+						}
+						isSame = false;
 					}
-				
 				}
 			});
 			btnNewButton_1_2.setForeground(Color.WHITE);
@@ -130,8 +165,11 @@ public class CustomerPanel extends JPanel {
 			btnNewButton_1_2.setBackground(new Color(153, 51, 0));
 			btnNewButton_1_2.setBounds(448, 119, 68, 23);
 		}
+
 		return btnNewButton_1_2;
+
 	}
+
 	public JLabel getLblNewLabel_3_1() {
 		if (lblNewLabel_3_1 == null) {
 			lblNewLabel_3_1 = new JLabel("\uC8FC\uC18C");
@@ -141,6 +179,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3_1;
 	}
+
 	public JTextField getTfIrum() {
 		if (tfIrum == null) {
 			tfIrum = new JTextField();
@@ -149,6 +188,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return tfIrum;
 	}
+
 	public JLabel getLblNewLabel_3_1_1() {
 		if (lblNewLabel_3_1_1 == null) {
 			lblNewLabel_3_1_1 = new JLabel("\uC804\uD654\uBC88\uD638");
@@ -158,6 +198,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1;
 	}
+
 	public JTextField getTfId() {
 		if (tfId == null) {
 			tfId = new JTextField();
@@ -166,6 +207,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return tfId;
 	}
+
 	public JLabel getLblNewLabel_3() {
 		if (lblNewLabel_3 == null) {
 			lblNewLabel_3 = new JLabel("\uC774\uB984");
@@ -175,6 +217,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3;
 	}
+
 	public JTextField getTfAddress() {
 		if (tfAddress == null) {
 			tfAddress = new JTextField();
@@ -184,6 +227,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return tfAddress;
 	}
+
 	public JLabel getLblNewLabel_5_1_1_1() {
 		if (lblNewLabel_5_1_1_1 == null) {
 			lblNewLabel_5_1_1_1 = new JLabel("");
@@ -193,6 +237,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5() {
 		if (lblNewLabel_5 == null) {
 			lblNewLabel_5 = new JLabel("");
@@ -202,6 +247,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_5;
 	}
+
 	public JLabel getLblNewLabel_3_2() {
 		if (lblNewLabel_3_2 == null) {
 			lblNewLabel_3_2 = new JLabel("\uC774\uB984");
@@ -211,6 +257,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3_2;
 	}
+
 	public JTextField getTfUIrum() {
 		if (tfUIrum == null) {
 			tfUIrum = new JTextField();
@@ -219,7 +266,8 @@ public class CustomerPanel extends JPanel {
 		}
 		return tfUIrum;
 	}
-	public JButton getBtnNewButton_1_1_1_1() { //회원 정보 삭제 기능
+
+	public JButton getBtnNewButton_1_1_1_1() { // 회원 정보 삭제 기능
 		if (btnNewButton_1_1_1_1 == null) {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
 			btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
@@ -227,22 +275,20 @@ public class CustomerPanel extends JPanel {
 					String irum = tfUIrum.getText();
 					String id = tfUId.getText();
 					String address = tfUAddress.getText();
-					
-					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 삭제 하시겠습니까?",
-								"confirm",JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.CLOSED_OPTION) {
-						
+
+					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 삭제 하시겠습니까?", "confirm",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.CLOSED_OPTION) {
+
+					} else if (result == JOptionPane.YES_OPTION) {
+						Customer c = new Customer(id, irum, address);
+						CustomerController cc = new CustomerController();
+						String msg = cc.delete(c);
+						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
+					} else {
+
 					}
-					else if(result == JOptionPane.YES_OPTION) {
-					Customer c = new Customer(id, irum, address);
-					CustomerController cc = new CustomerController();
-					String msg = cc.delete(c);
-					JOptionPane.showMessageDialog(CustomerPanel.this,msg);
-					}
-					else {
-						
-					}
-				
+
 				}
 			});
 			btnNewButton_1_1_1_1.setForeground(Color.WHITE);
@@ -253,6 +299,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_3_1_2() {
 		if (lblNewLabel_3_1_2 == null) {
 			lblNewLabel_3_1_2 = new JLabel("\uC804\uD654\uBC88\uD638");
@@ -262,15 +309,16 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2;
 	}
+
 	public JTextField getTfUId() {
 		if (tfUId == null) {
 			tfUId = new JTextField();
-			tfUId.setEnabled(false);
 			tfUId.setColumns(10);
 			tfUId.setBounds(103, 451, 174, 23);
 		}
 		return tfUId;
 	}
+
 	public JLabel getLblNewLabel_3_1_1_1() {
 		if (lblNewLabel_3_1_1_1 == null) {
 			lblNewLabel_3_1_1_1 = new JLabel("\uC8FC\uC18C");
@@ -280,6 +328,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1_1;
 	}
+
 	public JTextField getTfUAddress() {
 		if (tfUAddress == null) {
 			tfUAddress = new JTextField();
@@ -288,30 +337,40 @@ public class CustomerPanel extends JPanel {
 		}
 		return tfUAddress;
 	}
-	public JButton getBtnNewButton_1_1_1() { //회원 정보 수정기능
+
+	public JButton getBtnNewButton_1_1_1() { // 회원 정보 수정기능
 		if (btnNewButton_1_1_1 == null) {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				String irum = tfUIrum.getText();
-				String id = tfUId.getText();
-				String address = tfUAddress.getText();
-				
-				int result = JOptionPane.showConfirmDialog(null, "회원 정보를 수정 하시겠습니까?",
-									"Confirm",JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.CLOSED_OPTION)
-				{
-					
-				}
-				else if(result == JOptionPane.YES_OPTION) {
-				Customer c = new Customer(id, irum, address);
-				CustomerController cc = new CustomerController();
-				String msg = cc.update(c);
-				JOptionPane.showMessageDialog(CustomerPanel.this, msg);
-				}
-				else {
-					
-				}
+					String irum = tfUIrum.getText();
+					String id = tfUId.getText();
+					String address = tfUAddress.getText();
+
+					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 수정 하시겠습니까?", "Confirm",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.CLOSED_OPTION) {
+
+					} else if (result == JOptionPane.YES_OPTION) {
+						Customer c = new Customer(id, irum, address);
+						CustomerController cc = new CustomerController();
+						String msg = cc.update(c, a);
+						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
+
+						DefaultTableModel model = (DefaultTableModel) table.getModel();
+						model.setRowCount(0);
+						for (int i = 0; i < CustomerController.customers.size(); i++) {
+
+							Customer c1 = CustomerController.customers.get(i);
+							if (c1.getId().equals(tfUId.getText())) {
+								String[] data = { c1.getIrum(), c1.getId(), c1.getAddress() };
+								model.addRow(data);
+
+							}
+						}
+					} else {
+
+					}
 				}
 			});
 			btnNewButton_1_1_1.setForeground(Color.WHITE);
@@ -322,6 +381,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5_1() {
 		if (lblNewLabel_5_1 == null) {
 			lblNewLabel_5_1 = new JLabel("    \uC815 \uBCF4 \uC218 \uC815");
@@ -334,6 +394,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_5_1;
 	}
+
 	public JLabel getLblNewLabel_5_1_1() {
 		if (lblNewLabel_5_1_1 == null) {
 			lblNewLabel_5_1_1 = new JLabel("");
@@ -343,6 +404,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1;
 	}
+
 	public JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
@@ -351,6 +413,7 @@ public class CustomerPanel extends JPanel {
 		}
 		return scrollPane;
 	}
+
 	public JTable getTable() {
 		if (table == null) {
 			table = new JTable();
@@ -358,35 +421,19 @@ public class CustomerPanel extends JPanel {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					int row = table.getSelectedRow();
-					
-					tfUIrum.setText((String)table.getModel().getValueAt(row, 0));
-					tfUId.setText((String)table.getModel().getValueAt(row,1));
-					tfUAddress.setText((String)table.getModel().getValueAt(row, 2));
-					
+
+					tfUIrum.setText((String) table.getModel().getValueAt(row, 0));
+					tfUId.setText((String) table.getModel().getValueAt(row, 1));
+					tfUAddress.setText((String) table.getModel().getValueAt(row, 2));
+					a = (String) table.getModel().getValueAt(row, 1);
 				}
 			});
 			table.setModel(new DefaultTableModel(
-				new Object[][] {
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-					{null, null, null},
-				},
-				new String[] {
-					"\uC774\uB984", "\uC804\uD654\uBC88\uD638", "\uC8FC\uC18C"
-				}
-			));
+					new Object[][] { { null, null, null }, { null, null, null }, { null, null, null },
+							{ null, null, null }, { null, null, null }, { null, null, null }, { null, null, null },
+							{ null, null, null }, { null, null, null }, { null, null, null }, { null, null, null },
+							{ null, null, null }, { null, null, null }, { null, null, null }, { null, null, null }, },
+					new String[] { "\uC774\uB984", "\uC804\uD654\uBC88\uD638", "\uC8FC\uC18C" }));
 			table.getColumnModel().getColumn(0).setPreferredWidth(70);
 			table.getColumnModel().getColumn(0).setMinWidth(70);
 			table.getColumnModel().getColumn(1).setPreferredWidth(120);

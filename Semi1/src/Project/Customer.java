@@ -1,6 +1,13 @@
+//회원 정보 데이터 클래스
+
 package Project;
 
 public class Customer {
+	
+	//id 는 휴대폰 번호
+	//irum 은 성명
+	//addess 는 주소
+	
 	
 	String id;
 	String irum;

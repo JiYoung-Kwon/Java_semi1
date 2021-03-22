@@ -55,7 +55,7 @@ public class Frame extends JFrame {
 	public Frame() {
 		setTitle("\uB3C4\uC11C\uAD00\uB9AC\uC2DC\uC2A4\uD15C");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 664, 549);
+		setBounds(100, 100, 588, 654);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -65,7 +65,7 @@ public class Frame extends JFrame {
 		
 		JPanel panel1 = new JPanel();
 		panel1.setBackground(new Color(255, 255, 255));
-		panel1.setBounds(0, 39, 655, 471);
+		panel1.setBounds(0, 39, 572, 576);
 		contentPane.add(panel1);
 		panel1.setLayout(new BorderLayout(0, 0));
 		
@@ -121,7 +121,7 @@ public class Frame extends JFrame {
 		lblNewLabel.setOpaque(true);
 		lblNewLabel.setEnabled(false);
 		lblNewLabel.setBackground(new Color(102, 51, 0));
-		lblNewLabel.setBounds(0, 0, 655, 41);
+		lblNewLabel.setBounds(0, 0, 572, 41);
 		contentPane.add(lblNewLabel);
 		
 		btn_menu1.addActionListener(new ActionListener() {

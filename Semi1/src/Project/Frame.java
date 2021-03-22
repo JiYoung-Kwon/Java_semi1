@@ -107,7 +107,7 @@ public class Frame extends JFrame {
 		btn_menu3.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 12));
 		btn_menu3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ReturnPanel Rp = new ReturnPanel();
+				CheckInPanel Rp = new CheckInPanel();
 				panel1.removeAll();
 				panel1.add(Rp);
 				panel1.updateUI();

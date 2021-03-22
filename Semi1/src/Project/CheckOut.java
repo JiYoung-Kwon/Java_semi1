@@ -1,4 +1,4 @@
-//반납 기능 데이터 클래스
+//대여 및 반납 기능 데이터 클래스
 
 package Project;
 
@@ -10,32 +10,74 @@ public class CheckOut {
 	
 	int id;
 	String date;
-	String person;
-	String book;
+	String irum;
+	String title;
+	String phone;
+	String coDate;
+	String ciDate;
+	String returnDate;
 	
+	CheckOut(){};
+	
+	CheckOut(int id, String title,String irum,String phone,String coDate,String ciDate,String returnDate){
+		this.id = id;
+		this.irum = irum;
+		this.title = title;
+		this.phone = phone;
+		this.coDate = coDate;
+		this.ciDate = ciDate;
+		this.returnDate = returnDate;
+	}
+	
+	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getDate() {
-		return date;
+
+	public String getIrum() {
+		return irum;
 	}
-	public void setDate(String date) {
-		this.date = date;
+	public void setIrum(String irum) {
+		this.irum = irum;
 	}
-	public String getPerson() {
-		return person;
+	public String getCoDate() {
+		return coDate;
 	}
-	public void setPerson(String person) {
-		this.person = person;
+
+	public void setCoDate(String coDate) {
+		this.coDate = coDate;
 	}
-	public String getBook() {
-		return book;
+
+	public String getCiDate() {
+		return ciDate;
 	}
-	public void setBook(String book) {
-		this.book = book;
+
+	public void setCiDate(String ciDate) {
+		this.ciDate = ciDate;
+	}
+
+	public String getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(String returnDate) {
+		this.returnDate = returnDate;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 }

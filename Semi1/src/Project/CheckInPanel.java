@@ -47,12 +47,13 @@ public class CheckInPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	int tfId;
+	String tfId;
 	String tfReturnDate;
-	CheckInController cc = new CheckInController();
+	
 	CheckOut c;
 
 	public CheckInPanel() {
+		
 		setBackground(Color.WHITE);
 		setLayout(null);
 
@@ -84,29 +85,9 @@ public class CheckInPanel extends JPanel {
 		add(getLblNewLabel_5_1_1());
 		add(getScrollPane());
 
-		// 테스트용 다른 코드 가져오기
-		Customer customer1 = new Customer("01020758297", "권지영", "수원시");
-
-		CheckOut k = new CheckOut();
-		k.setId(1);
-		k.setTitle("안녕하세요");
-		k.setIrum(customer1.getIrum());
-		k.setPhone(customer1.getId());
-		k.setCoDate("20210322");
-		k.setCiDate("20210325");
-		cc.init(k);
-
-		CheckOut z = new CheckOut();
-		z.setId(2);
-		z.setTitle("안녕");
-		z.setIrum(customer1.getIrum());
-		z.setPhone(customer1.getId());
-		z.setCoDate("20210322");
-		z.setCiDate("20210325");
-		cc.init(z);
-
 	}
 
+	//검색 버튼
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
@@ -115,13 +96,13 @@ public class CheckInPanel extends JPanel {
 
 					String findStr = tfFindTitle.getText();
 					String type = comboBox.getSelectedItem().toString();
-					List<CheckOut> list = cc.search(findStr, type);
+					List<CheckOut> list = MainData.checkInC.search(findStr, type);
 
 					DefaultTableModel model = (DefaultTableModel) table.getModel();
 					model.setRowCount(0);
 					for (int i = 0; i < list.size(); i++) {
 						CheckOut c = list.get(i);
-						String[] data = { Integer.toString(c.getId()), c.getTitle(), c.getIrum(), c.getPhone(),
+						String[] data = {c.getId(), c.getTitle(), c.getIrum(), c.getPhone(),
 								c.getCoDate(), c.getCiDate(), c.getReturnDate() };
 						model.addRow(data);
 					}
@@ -137,31 +118,19 @@ public class CheckInPanel extends JPanel {
 		return btnNewButton;
 	}
 
+	//반납
 	public JButton getBtnNewButton_1_2() {
 		if (btnNewButton_1_2 == null) {
 			btnNewButton_1_2 = new JButton("\uBC18\uB0A9");
 			btnNewButton_1_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					int id = tfId;
-					String title = tfTitle.getText();
-					String irum = tfIrum.getText();
-					String phone = tfPhone.getText();
-					String coDate = tfCODate.getText();
-					String ciDate = tfCIDate.getText();
-
-					SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-					Date now = new Date();
-					String returnDate = format1.format(now);
-
-					CheckOut c = new CheckOut(id, title, irum, phone, coDate, ciDate, returnDate);
-
-					CheckInController cc = new CheckInController();
+					String id = tfId;
 
 					String msg = "반납하시겠습니까?";
 					int result = JOptionPane.showConfirmDialog(CheckInPanel.this, msg);
 
 					if (result == JOptionPane.YES_OPTION) {
-						msg = cc.append(c);
+						msg = MainData.checkInC.append(id);
 						JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 					}
 
@@ -237,6 +206,7 @@ public class CheckInPanel extends JPanel {
 	public JTextField getTfTitle() {
 		if (tfTitle == null) {
 			tfTitle = new JTextField();
+			tfTitle.setEditable(false);
 			tfTitle.setColumns(10);
 			tfTitle.setBounds(103, 418, 148, 23);
 		}
@@ -248,15 +218,12 @@ public class CheckInPanel extends JPanel {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
 			btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					int id = tfId;
+					String id = tfId;
 
-					c = new CheckOut(id, null, null, null, null, null, null);
-
-					if (c == null) {
+					if (id == null) {
 						JOptionPane.showMessageDialog(CheckInPanel.this, "먼저 선택하세요.");
 					} else {
-						CheckInController cc = new CheckInController();
-						String msg = cc.delete(c);
+						String msg = MainData.checkInC.delete(id);
 						JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 					}
 
@@ -284,6 +251,7 @@ public class CheckInPanel extends JPanel {
 	public JTextField getTfIrum() {
 		if (tfIrum == null) {
 			tfIrum = new JTextField();
+			tfIrum.setEditable(false);
 			tfIrum.setColumns(10);
 			tfIrum.setBounds(103, 451, 148, 23);
 		}
@@ -310,22 +278,17 @@ public class CheckInPanel extends JPanel {
 		return tfPhone;
 	}
 
+	//수정버튼
 	public JButton getBtnNewButton_1_1_1() {
 		if (btnNewButton_1_1_1 == null) {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					int id = tfId;
-					String title = tfTitle.getText();
-					String irum = tfIrum.getText();
-					String phone = tfPhone.getText();
+					String id = tfId;
 					String coDate = tfCODate.getText();
 					String ciDate = tfCIDate.getText();
-					String returnDate = tfReturnDate;
 
-					CheckOut c = new CheckOut(id, title, irum, phone, coDate, ciDate, returnDate);
-
-					String msg = cc.update(c);
+					String msg = MainData.checkInC.update(id,coDate, ciDate);
 					JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 				}
 			});
@@ -419,13 +382,12 @@ public class CheckInPanel extends JPanel {
 							int row = table.getSelectedRow();
 							// int col = table.getSelectedColumn();
 
-							tfId = Integer.parseInt((String) table.getModel().getValueAt(row, 0));
+							tfId = (String) table.getModel().getValueAt(row, 0);
 							tfTitle.setText((String) table.getModel().getValueAt(row, 1));
 							tfIrum.setText((String) table.getModel().getValueAt(row, 2));
 							tfPhone.setText((String) table.getModel().getValueAt(row, 3));
 							tfCODate.setText((String) table.getModel().getValueAt(row, 4));
 							tfCIDate.setText((String) table.getModel().getValueAt(row, 5));
-							tfReturnDate = (String) table.getModel().getValueAt(row, 6);
 						}
 					});
 				}

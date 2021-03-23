@@ -101,11 +101,27 @@ public class Frame extends JFrame {
 		btn_menu2.setBorderPainted(false);
 		btn_menu2.setBackground(new Color(102, 51, 0));
 		
-		JButton btn_menu3 = new JButton("\uB300\uC5EC & \uBC18\uB0A9");
-		btn_menu3.setBounds(194, 0, 106, 39);
-		contentPane.add(btn_menu3);
-		btn_menu3.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 12));
+		JButton btn_menu3 = new JButton("\uB300\uC5EC");
 		btn_menu3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CheckOutPanel Cp = new CheckOutPanel();
+				panel1.removeAll();
+				panel1.add(Cp);
+				panel1.updateUI();
+			}
+		});
+		btn_menu3.setForeground(Color.WHITE);
+		btn_menu3.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 12));
+		btn_menu3.setBorderPainted(false);
+		btn_menu3.setBackground(new Color(102, 51, 0));
+		btn_menu3.setBounds(197, 0, 106, 39);
+		contentPane.add(btn_menu3);
+		
+		JButton btn_menu4 = new JButton("\uBC18\uB0A9 & \uD604\uD669");
+		btn_menu4.setBounds(302, 0, 106, 39);
+		contentPane.add(btn_menu4);
+		btn_menu4.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 12));
+		btn_menu4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CheckInPanel Rp = new CheckInPanel();
 				panel1.removeAll();
@@ -113,9 +129,9 @@ public class Frame extends JFrame {
 				panel1.updateUI();
 			}
 		});
-		btn_menu3.setForeground(Color.WHITE);
-		btn_menu3.setBorderPainted(false);
-		btn_menu3.setBackground(new Color(102, 51, 0));
+		btn_menu4.setForeground(Color.WHITE);
+		btn_menu4.setBorderPainted(false);
+		btn_menu4.setBackground(new Color(102, 51, 0));
 		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setOpaque(true);
@@ -124,11 +140,14 @@ public class Frame extends JFrame {
 		lblNewLabel.setBounds(0, 0, 572, 41);
 		contentPane.add(lblNewLabel);
 		
+
+		
 		btn_menu1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btn_menu1.setBackground(new Color(153, 102, 51));
 				btn_menu2.setBackground(new Color(102, 51, 0));
 				btn_menu3.setBackground(new Color(102, 51, 0));
+				btn_menu4.setBackground(new Color(102, 51, 0));
 			}
 		});
 		
@@ -137,6 +156,7 @@ public class Frame extends JFrame {
 				btn_menu1.setBackground(new Color(102, 51, 0));
 				btn_menu2.setBackground(new Color(153, 102, 51));
 				btn_menu3.setBackground(new Color(102, 51, 0));
+				btn_menu4.setBackground(new Color(102, 51, 0));
 			}
 		});
 		
@@ -145,6 +165,16 @@ public class Frame extends JFrame {
 				btn_menu1.setBackground(new Color(102, 51, 0));
 				btn_menu2.setBackground(new Color(102, 51, 0));
 				btn_menu3.setBackground(new Color(153, 102, 51));
+				btn_menu4.setBackground(new Color(102, 51, 0));
+			}
+		});
+		
+		btn_menu4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btn_menu1.setBackground(new Color(102, 51, 0));
+				btn_menu2.setBackground(new Color(102, 51, 0));
+				btn_menu3.setBackground(new Color(102, 51, 0));
+				btn_menu4.setBackground(new Color(153, 102, 51));
 			}
 		});
 			

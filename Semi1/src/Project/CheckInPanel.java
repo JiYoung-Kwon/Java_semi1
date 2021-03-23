@@ -49,11 +49,11 @@ public class CheckInPanel extends JPanel {
 	 */
 	String tfId;
 	String tfReturnDate;
-	
+
 	CheckOut c;
 
 	public CheckInPanel() {
-		
+
 		setBackground(Color.WHITE);
 		setLayout(null);
 
@@ -87,26 +87,13 @@ public class CheckInPanel extends JPanel {
 
 	}
 
-	//검색 버튼
+	// 검색 버튼
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
-					String findStr = tfFindTitle.getText();
-					String type = comboBox.getSelectedItem().toString();
-					List<CheckOut> list = MainData.checkInC.search(findStr, type);
-
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					model.setRowCount(0);
-					for (int i = 0; i < list.size(); i++) {
-						CheckOut c = list.get(i);
-						String[] data = {c.getId(), c.getTitle(), c.getIrum(), c.getPhone(),
-								c.getCoDate(), c.getCiDate(), c.getReturnDate() };
-						model.addRow(data);
-					}
-
+					reTable();
 				}
 			});
 			btnNewButton.setForeground(Color.WHITE);
@@ -118,7 +105,7 @@ public class CheckInPanel extends JPanel {
 		return btnNewButton;
 	}
 
-	//반납
+	// 반납
 	public JButton getBtnNewButton_1_2() {
 		if (btnNewButton_1_2 == null) {
 			btnNewButton_1_2 = new JButton("\uBC18\uB0A9");
@@ -133,6 +120,7 @@ public class CheckInPanel extends JPanel {
 						msg = MainData.checkInC.append(id);
 						JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 					}
+					reTable();
 
 				}
 			});
@@ -220,13 +208,18 @@ public class CheckInPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					String id = tfId;
 
-					if (id == null) {
-						JOptionPane.showMessageDialog(CheckInPanel.this, "먼저 선택하세요.");
-					} else {
-						String msg = MainData.checkInC.delete(id);
-						JOptionPane.showMessageDialog(CheckInPanel.this, msg);
-					}
+					String msg = MainData.checkInC.delete(id);
+					JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 
+					reTable();
+					
+					//삭제했을 경우, 텍스트필드 비우기
+					tfId = null;
+					tfTitle.setText(null);
+					tfIrum.setText(null);
+					tfPhone.setText(null);
+					tfCODate.setText(null);
+					tfCIDate.setText(null);
 				}
 			});
 			btnNewButton_1_1_1_1.setForeground(Color.WHITE);
@@ -237,7 +230,7 @@ public class CheckInPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1_1;
 	}
-
+ 
 	public JLabel getLblNewLabel_3_1_2() {
 		if (lblNewLabel_3_1_2 == null) {
 			lblNewLabel_3_1_2 = new JLabel("\uC774\uB984");
@@ -278,7 +271,7 @@ public class CheckInPanel extends JPanel {
 		return tfPhone;
 	}
 
-	//수정버튼
+	// 수정버튼
 	public JButton getBtnNewButton_1_1_1() {
 		if (btnNewButton_1_1_1 == null) {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
@@ -288,8 +281,10 @@ public class CheckInPanel extends JPanel {
 					String coDate = tfCODate.getText();
 					String ciDate = tfCIDate.getText();
 
-					String msg = MainData.checkInC.update(id,coDate, ciDate);
+					String msg = MainData.checkInC.update(id, coDate, ciDate);
 					JOptionPane.showMessageDialog(CheckInPanel.this, msg);
+
+					reTable();
 				}
 			});
 			btnNewButton_1_1_1.setForeground(Color.WHITE);
@@ -395,5 +390,20 @@ public class CheckInPanel extends JPanel {
 		}
 
 		return table;
+	}
+
+	public void reTable() {
+		String findStr = tfFindTitle.getText();
+		String type = comboBox.getSelectedItem().toString();
+		List<CheckOut> list = MainData.checkInC.search(findStr, type);
+
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0);
+		for (int i = 0; i < list.size(); i++) {
+			CheckOut c = list.get(i);
+			String[] data = { c.getId(), c.getTitle(), c.getIrum(), c.getPhone(), c.getCoDate(), c.getCiDate(),
+					c.getReturnDate() };
+			model.addRow(data);
+		}
 	}
 }

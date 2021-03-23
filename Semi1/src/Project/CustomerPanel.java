@@ -23,7 +23,7 @@ public class CustomerPanel extends JPanel {
 	private JLabel lblNewLabel_3_1;
 	private JTextField tfIrum;
 	private JLabel lblNewLabel_3_1_1;
-	private JTextField tfId;
+	private JTextField tfPhoneNum;
 	private JLabel lblNewLabel_3;
 	private JTextField tfAddress;
 	private JLabel lblNewLabel_5_1_1_1;
@@ -32,7 +32,7 @@ public class CustomerPanel extends JPanel {
 	private JTextField tfUIrum;
 	private JButton btnNewButton_1_1_1_1;
 	private JLabel lblNewLabel_3_1_2;
-	private JTextField tfUId;
+	private JTextField tfUPhoneNum;
 	private JLabel lblNewLabel_3_1_1_1;
 	private JTextField tfUAddress;
 	private JButton btnNewButton_1_1_1;
@@ -44,7 +44,6 @@ public class CustomerPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-
 	boolean isSame = false;
 
 	public CustomerPanel() {
@@ -55,7 +54,7 @@ public class CustomerPanel extends JPanel {
 		add(getLblNewLabel_3_1());
 		add(getTfIrum());
 		add(getLblNewLabel_3_1_1());
-		add(getTfId());
+		add(getTfPhoneNum());
 		add(getLblNewLabel_3());
 		add(getTfAddress());
 		add(getLblNewLabel_5_1_1_1());
@@ -64,7 +63,7 @@ public class CustomerPanel extends JPanel {
 		add(getTfUIrum());
 		add(getBtnNewButton_1_1_1_1());
 		add(getLblNewLabel_3_1_2());
-		add(getTfUId());
+		add(getTfUPhoneNum());
 		add(getLblNewLabel_3_1_1_1());
 		add(getTfUAddress());
 		add(getBtnNewButton_1_1_1());
@@ -74,25 +73,15 @@ public class CustomerPanel extends JPanel {
 
 	}
 
-	String a = "";
-
 	public JButton getBtnNewButton() { // 회원 정보 검색 버튼
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					CustomerController cc = new CustomerController();
-					String findId = tfId.getText();
-					List<Customer> list = cc.search(findId);
-
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					model.setRowCount(0);
-					for (int i = 0; i < list.size(); i++) {
-						Customer c = list.get(i);
-						String[] data = { c.getIrum(), c.getId(), c.getAddress() };
-						model.addRow(data);
-					}
-
+					String findId = tfPhoneNum.getText();
+					List<Customer> list = MainData.customerC.search(findId);
+					
+					reTable();
 				}
 			});
 			btnNewButton.setForeground(Color.WHITE);
@@ -109,52 +98,34 @@ public class CustomerPanel extends JPanel {
 			btnNewButton_1_2 = new JButton("\uB4F1\uB85D");
 			btnNewButton_1_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//입력 데이터 가져오기
-					String cId = tfId.getText();
+					// 입력 데이터 가져오기
+					String cId = tfPhoneNum.getText();
 					String cIrum = tfIrum.getText();
 					String cAddress = tfAddress.getText();
-					
-					//확인 여부 메세지 출력
-					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 등록 하시겠습니까?", "Confirm",
+					System.out.println(MainData.getCustomers().size());
+
+					// 확인 여부 메세지 출력
+					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 등록 하시겠습니까?", "Confirm",
 							JOptionPane.YES_NO_OPTION);
 
 					if (result == JOptionPane.YES_OPTION) {
-						
-						//첫 번째 입력이 아닐 경우
-						if (CustomerController.customers.size() != 0) {
-							//아이디 존재 여부
-							for (int i = 0; i < CustomerController.customers.size(); i++) {
-								Customer c1 = CustomerController.customers.get(i);
-								if (c1.getId().equals(cId)) {
+						// 첫 번째 입력이 아닐 경우
+						if (MainData.getCustomers().size() != 0) {
+							// 아이디 존재 여부
+							for (int i = 0; i < MainData.getCustomers().size(); i++) {
+								Customer c1 = MainData.getCustomers().get(i);
+								if (c1.getPhoneNum().equals(cId)) {
 									isSame = true;
 									break;
 								}
 							}
-							
-							// 아이디가 존재한다면
-							if(isSame)
-								JOptionPane.showMessageDialog(CustomerPanel.this, "이미 가입된 회원입니다.");
-							else {
-								Customer c = new Customer(cId, cIrum, cAddress);
-								CustomerController cc = new CustomerController();
-								String msg = cc.append(c);
-								JOptionPane.showMessageDialog(CustomerPanel.this, msg);
-							}
 						}
-						else {
-							Customer c = new Customer(cId, cIrum, cAddress);
-							CustomerController cc = new CustomerController();
-							String msg = cc.append(c);
-							JOptionPane.showMessageDialog(CustomerPanel.this, msg);
-						}
-						
-						DefaultTableModel model = (DefaultTableModel) table.getModel();
-						model.setRowCount(0);
-						for (int j = 0; j < CustomerController.customers.size(); j++) {
-							Customer c2 = CustomerController.customers.get(j);
-							String[] data = { c2.getIrum(), c2.getId(), c2.getAddress() };
-							model.addRow(data);								
-						}
+						Customer c = new Customer(cId, cIrum, cAddress);
+						String msg = MainData.customerC.append(c, isSame);
+						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
+
+						reTable();
+
 						isSame = false;
 					}
 				}
@@ -199,13 +170,13 @@ public class CustomerPanel extends JPanel {
 		return lblNewLabel_3_1_1;
 	}
 
-	public JTextField getTfId() {
-		if (tfId == null) {
-			tfId = new JTextField();
-			tfId.setColumns(10);
-			tfId.setBounds(288, 31, 125, 23);
+	public JTextField getTfPhoneNum() {
+		if (tfPhoneNum == null) {
+			tfPhoneNum = new JTextField();
+			tfPhoneNum.setColumns(10);
+			tfPhoneNum.setBounds(288, 31, 125, 23);
 		}
-		return tfId;
+		return tfPhoneNum;
 	}
 
 	public JLabel getLblNewLabel_3() {
@@ -272,23 +243,17 @@ public class CustomerPanel extends JPanel {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
 			btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					String irum = tfUIrum.getText();
-					String id = tfUId.getText();
-					String address = tfUAddress.getText();
 
-					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 삭제 하시겠습니까?", "confirm",
+					String id = tfUPhoneNum.getText().replaceAll("\\D", ""); // get으로 받아온 번호의 하이픈(-) 제거 기능
+
+					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 삭제 하시겠습니까?", "confirm",
 							JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.CLOSED_OPTION) {
-
-					} else if (result == JOptionPane.YES_OPTION) {
-						Customer c = new Customer(id, irum, address);
-						CustomerController cc = new CustomerController();
-						String msg = cc.delete(c);
+					if (result == JOptionPane.YES_OPTION) {
+						String msg = MainData.customerC.delete(id);
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
-					} else {
-
 					}
 
+					reTable();
 				}
 			});
 			btnNewButton_1_1_1_1.setForeground(Color.WHITE);
@@ -310,13 +275,14 @@ public class CustomerPanel extends JPanel {
 		return lblNewLabel_3_1_2;
 	}
 
-	public JTextField getTfUId() {
-		if (tfUId == null) {
-			tfUId = new JTextField();
-			tfUId.setColumns(10);
-			tfUId.setBounds(103, 451, 174, 23);
+	public JTextField getTfUPhoneNum() {
+		if (tfUPhoneNum == null) {
+			tfUPhoneNum = new JTextField();
+			tfUPhoneNum.setEditable(false);
+			tfUPhoneNum.setColumns(10);
+			tfUPhoneNum.setBounds(103, 451, 174, 23);
 		}
-		return tfUId;
+		return tfUPhoneNum;
 	}
 
 	public JLabel getLblNewLabel_3_1_1_1() {
@@ -343,33 +309,21 @@ public class CustomerPanel extends JPanel {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+
 					String irum = tfUIrum.getText();
-					String id = tfUId.getText();
+					String id = tfUPhoneNum.getText().replaceAll("\\D", ""); // get으로 받아온 번호의 하이픈(-)제거 기능
 					String address = tfUAddress.getText();
 
-					int result = JOptionPane.showConfirmDialog(null, "회원 정보를 수정 하시겠습니까?", "Confirm",
+					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 수정 하시겠습니까?", "Confirm",
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.CLOSED_OPTION) {
 
 					} else if (result == JOptionPane.YES_OPTION) {
-						Customer c = new Customer(id, irum, address);
-						CustomerController cc = new CustomerController();
-						String msg = cc.update(c, a);
+
+						String msg = MainData.customerC.update(id, irum, address);
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
 
-						DefaultTableModel model = (DefaultTableModel) table.getModel();
-						model.setRowCount(0);
-						for (int i = 0; i < CustomerController.customers.size(); i++) {
-
-							Customer c1 = CustomerController.customers.get(i);
-							if (c1.getId().equals(tfUId.getText())) {
-								String[] data = { c1.getIrum(), c1.getId(), c1.getAddress() };
-								model.addRow(data);
-
-							}
-						}
-					} else {
-
+						reTable();
 					}
 				}
 			});
@@ -423,9 +377,9 @@ public class CustomerPanel extends JPanel {
 					int row = table.getSelectedRow();
 
 					tfUIrum.setText((String) table.getModel().getValueAt(row, 0));
-					tfUId.setText((String) table.getModel().getValueAt(row, 1));
+					tfUPhoneNum.setText((String) table.getModel().getValueAt(row, 1));
 					tfUAddress.setText((String) table.getModel().getValueAt(row, 2));
-					a = (String) table.getModel().getValueAt(row, 1);
+
 				}
 			});
 			table.setModel(new DefaultTableModel(
@@ -442,5 +396,28 @@ public class CustomerPanel extends JPanel {
 			table.getColumnModel().getColumn(2).setMinWidth(200);
 		}
 		return table;
+	}
+
+	public String phone(String src) { // 전화번호 입력시 하이픈(-)이 추가되도록 하는 정규식 메서드
+		if (src == null) {
+			return "";
+		}
+		if (src.length() == 8) {
+			return src.replaceFirst("^([0-9]{4})([0-9]{4})$", "$1-$2");
+		} else if (src.length() == 12) {
+			return src.replaceFirst("(^[0-9]{4})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+		}
+		return src.replaceFirst("(^02|[0-9]{3})([0-9]{3,4})([0-9]{4})$", "$1-$2-$3");
+	}
+
+	public void reTable() {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0);
+		for (int j = 0; j < MainData.getCustomers().size(); j++) {
+			Customer c = MainData.getCustomers().get(j);
+			String src = phone(c.getPhoneNum()); // 전화번호 하이픈 생성을 위한 phone 메서드 호출
+			String[] data = { c.getIrum(), src, c.getAddress() };
+			model.addRow(data);
+		}
 	}
 }

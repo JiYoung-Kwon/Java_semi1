@@ -21,8 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import section11.Member;
-
 public class BookPanel extends JPanel {
 	private JButton btnNewButton;
 	private JButton btnNewButton_1_2;
@@ -56,7 +54,6 @@ public class BookPanel extends JPanel {
 		setBackground(Color.WHITE);
 		setLayout(null);
 		add(getCbDate());
-		add(getChckbxNewCheckBox());
 		add(getBtnNewButton());
 		add(getCbUDate());
 		add(getCbSort());
@@ -98,7 +95,6 @@ public class BookPanel extends JPanel {
 	private JComboBox cbSort;
 	private JComboBox cbUSort;
 	private JComboBox cbDate;
-	private JCheckBox chckbxNewCheckBox;
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");      // 검색 버튼
@@ -152,7 +148,7 @@ public class BookPanel extends JPanel {
 			btnNewButton.setFont(new Font("굴림", Font.PLAIN, 12));
 			btnNewButton.setBorderPainted(false);
 			btnNewButton.setBackground(new Color(153, 51, 0));
-			btnNewButton.setBounds(436, 30, 80, 23);
+			btnNewButton.setBounds(448, 30, 68, 23);
 		}
 		return btnNewButton;
 		
@@ -233,7 +229,7 @@ public class BookPanel extends JPanel {
 			tfTitle = new JTextField();
 			tfTitle.setDragEnabled(true);
 			tfTitle.setColumns(10);
-			tfTitle.setBounds(103, 31, 252, 23);
+			tfTitle.setBounds(103, 31, 310, 23);
 		}
 		return tfTitle;
 	}
@@ -330,6 +326,7 @@ public class BookPanel extends JPanel {
 	public JTextField getTfUBookNo() {
 		if (tfUBookNo == null) {
 			tfUBookNo = new JTextField();
+			tfUBookNo.setDisabledTextColor(Color.BLACK);
 			tfUBookNo.setEnabled(false);
 			tfUBookNo.setColumns(10);
 			tfUBookNo.setBounds(103, 418, 148, 23);
@@ -493,22 +490,5 @@ public class BookPanel extends JPanel {
 			cbDate.setBounds(288, 118, 125, 23);
 		}
 		return cbDate;
-	}
-	public JCheckBox getChckbxNewCheckBox() {
-		if (chckbxNewCheckBox == null) {
-			chckbxNewCheckBox = new JCheckBox("No.");
-			chckbxNewCheckBox.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-			
-					
-					System.out.println(searchCheck);
-				}
-			});
-			chckbxNewCheckBox.setForeground(new Color(255, 255, 255));
-			chckbxNewCheckBox.setBackground(new Color(102, 51, 0));
-			chckbxNewCheckBox.setBounds(366, 32, 62, 23);
-		}
-		return chckbxNewCheckBox;
 	}
 }

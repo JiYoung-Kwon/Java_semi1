@@ -9,20 +9,21 @@ import java.util.List;
 
 public class CheckInController {
 
-
 	// 반납 기능 -> 반납 데이터 추가
 	public String append(String id) {
 		String msg = "반납 완료";
-		
+		if (id == null)
+			msg = "반납할 목록을 선택하세요.";
+
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		Date now = new Date();
 		String returnDate = format1.format(now);
-		
+
 		System.out.println(id);
-		
+
 		try {
 			for (int index = 0; index < MainData.getCheckOutInfo().size(); index++) {
-		
+
 				if (MainData.getCheckOutInfo().get(index).getId().equals(id)) { // string 값 -> equals로 비교해야 함!
 					MainData.getCheckOutInfo().get(index).setReturnDate(returnDate);
 					break;
@@ -42,12 +43,18 @@ public class CheckInController {
 
 		try {
 			// 리스트에 있는 것 수정하기
-			for (int index = 0; index < MainData.getCheckOutInfo().size(); index++) {
-				
-				if (MainData.getCheckOutInfo().get(index).getId().equals(id)) {
-					MainData.getCheckOutInfo().get(index).setCoDate(coDate);
-					MainData.getCheckOutInfo().get(index).setCiDate(ciDate);
-					break;
+			if (id == null)
+				msg = "수정할 목록을 선택하세요.";
+			else if (coDate.length() == 0 | ciDate.length() == 0)
+				msg = "내용을 입력하세요.";
+			else {
+				for (int index = 0; index < MainData.getCheckOutInfo().size(); index++) {
+
+					if (MainData.getCheckOutInfo().get(index).getId().equals(id)) {
+						MainData.getCheckOutInfo().get(index).setCoDate(coDate);
+						MainData.getCheckOutInfo().get(index).setCiDate(ciDate);
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -61,14 +68,15 @@ public class CheckInController {
 	// 삭제 기능 -> id에 해당하는 리스트 삭제
 	public String delete(String id) {
 		String msg = "대여 정보를 삭제했습니다.";
-
+		if (id == null)
+			msg = "삭제할 목록을 선택하세요.";
 		try {
 			for (int index = MainData.getCheckOutInfo().size() - 1; index >= 0; index--) {
 
 				if (MainData.getCheckOutInfo().get(index).getId().equals(id)) {
 					MainData.getCheckOutInfo().remove(index);
-					break; 
-					
+					break;
+
 				}
 			}
 		} catch (Exception e) {

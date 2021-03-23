@@ -21,6 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+import section11.Member;
+
 public class BookPanel extends JPanel {
 	private JButton btnNewButton;
 	private JButton btnNewButton_1_2;
@@ -107,22 +109,22 @@ public class BookPanel extends JPanel {
 							(DefaultTableModel)table.getModel();
 					model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
 					
-					if(tfTitle.getText().length()==0&&tfAuthor.getText().length()==0) {
-						for(int i=0; i<MainData.getBooks().size(); i++) {
+					if(tfTitle.getText().length()==0&&tfAuthor.getText().length()==0) {      // 도서명과 저자의 검색어가 없을경우.
+						for(int i=0; i<MainData.getBooks().size(); i++) {                    // Books 리스트에 있는 객체를 전부 출력하기.
 							Book b = MainData.getBooks().get(i);
 							String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
 							model.addRow(data);}}
 						
 						
 						
-					 // 알림말로 변경해야함.
-					else {String findStr = tfTitle.getText();     // 찾는 검색어
+					 // 검색어가 둘중 하나 이상 있는 경우.
+					else {String findStr = tfTitle.getText();     // 찾는 검색어(도서명 or No.)               
 					      String findStr2 = tfAuthor.getText();   // 찾는 저자 
-					     List<Book> list = MainData.bookC.search(findStr, findStr2);
+					     List<Book> list = MainData.bookC.search(findStr, findStr2);   // 검색어와 일치하는 해당 객체의 리스트를 불러오는 메소드.
 					     	
-								for(int i=0; i<list.size(); i++) {
+								for(int i=0; i<list.size(); i++) {       // 해당 객체들의 리스트를 출력.
 									Book b = list.get(i);
-									String[] data = {"넘버",b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+									String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
 									model.addRow(data);
 								}}
 					
@@ -162,21 +164,21 @@ public class BookPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 				    		
 					 
-					String bTitle = tfTitle.getText();
+					String bTitle = tfTitle.getText();          //텍스트 필드에서 값 불러와서 각 변수에 저장.
 					String bAuthor = tfAuthor.getText();
 					String bSort = (String) cbSort.getSelectedItem();
 					String bDate = (String) cbDate.getSelectedItem();
 					
 					
-					Book b = new Book(bTitle, bAuthor, bSort, bDate.replace("일", ""));
-					String msg = MainData.bookC.append(b);
-					JOptionPane.showMessageDialog(null, msg);
+					Book b = new Book(bTitle, bAuthor, bSort, bDate.replace("일", ""));   // 각 변수값들 Book 객체에 저장
+					String msg = MainData.bookC.append(b);                  // 생성된 객체를 books 리스트에 저장
+					JOptionPane.showMessageDialog(null, msg);               // 생성 확인 메시지 출력.
 					
-					DefaultTableModel model = 
+					DefaultTableModel model =                            
 							(DefaultTableModel)table.getModel();
 					model.setRowCount(0);//기존 표시된 데이터를 모두 삭제
 					
-					for(int i=0; i<MainData.getBooks().size(); i++) {
+					for(int i=0; i<MainData.getBooks().size(); i++) {    // Books에 있는 객체 모두 model에 출력하기.
 						b = MainData.getBooks() .get(i);
 						String[] data = {b.getBookNo(), b.getTitle(), b.getAuthor(),"", b.getSort(),String.format("%s일", b.getDate())};
 						model.addRow(data);}
@@ -273,6 +275,24 @@ public class BookPanel extends JPanel {
 	public JButton getBtnNewButton_1_1_1_1() {
 		if (btnNewButton_1_1_1_1 == null) {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
+			btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					String findStr = tfUBookNo.getText(); // 찾을 값 (No.)
+					int index = MainData.bookC.selectOne(findStr);  // 삭제할 객체 인덱스 찾기
+					MainData.getBooks().remove(index);      // 객체 삭제
+					List<Book> list = MainData.bookC.search(findStr);
+				     
+					DefaultTableModel model =               // 모델 생성
+							(DefaultTableModel)table.getModel();
+					model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
+			   							
+						for(int i=0; i<list.size(); i++) {  // 해당 값 삭제 되었는지 확인하기. (사실 없어도됨)
+							Book b = list.get(i);
+							String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+							model.addRow(data);}				
+				}
+			});
 			btnNewButton_1_1_1_1.setForeground(Color.WHITE);
 			btnNewButton_1_1_1_1.setFont(new Font("굴림", Font.PLAIN, 12));
 			btnNewButton_1_1_1_1.setBorderPainted(false);
@@ -321,29 +341,25 @@ public class BookPanel extends JPanel {
 			btnNewButton_1_1_1 = new JButton("\uC218\uC815");     // 수정 버튼
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				String findStr = tfUBookNo.getText(); // 찾을 값 (No.)
+					
+				String findStr = tfUBookNo.getText(); // 수정할 객체를 찾을 검색값(No.)
 				
-				String title  = tfUTitle.getText();
+				String title  = tfUTitle.getText();         // 수정할 변수 선언 (텍스트 해당 필드에서 불러옴)
 				String author =  tfUAuthor.getText();
 				String sort   = (String) cbUSort.getSelectedItem();
 				String date   = (String) cbUDate.getSelectedItem();
 				
-				int index = MainData.bookC.selectOne(findStr);
-				if(index < 0) {System.out.println("찾는값이 없습니다.");}
-				else {
-				MainData.bookC.update(index, title, author, sort, date);
-				
-				List<Book> list = MainData.bookC.search(findStr);
-			     
+				int index = MainData.bookC.selectOne(findStr);      // 검색값(No)으로 찾은 객체의 인덱스 번호를 가져오는 메소드.
+			
+				MainData.bookC.update(index, title, author, sort, date);   // 수정할 내용으로 업데이트.
+										     
 				DefaultTableModel model =               // 모델 생성
 						(DefaultTableModel)table.getModel();
 				model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
-		   							
-					for(int i=0; i<list.size(); i++) {
-						Book b = list.get(i);
-						String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
-						model.addRow(data);}				
-				}
+		   					
+				Book b = MainData.getBooks().get(index);     // 해당 인덱스의 객체를 가져옴.(화면 갱신을 위해)
+				String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+				model.addRow(data);   // 해당 내용 model에 출력
 				
 				
 				}
@@ -388,6 +404,7 @@ public class BookPanel extends JPanel {
 	public JTable getTable() {
 		if (table == null) {
 			table = new JTable();
+			table.setBackground(Color.WHITE);
 			table.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -403,24 +420,9 @@ public class BookPanel extends JPanel {
 			});
 			table.setModel(new DefaultTableModel(
 				new Object[][] {
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
-					{null, null, null, null, null, null},
 				},
 				new String[] {
-					"NO.", "\uB3C4\uC11C\uBA85", "\uC800\uC790", "\uB300\uC5EC\uD604\uD669", "\uBD84\uB958", "\uB300\uC5EC\uC77C"
+					"\uB3C4\uC11C\uBC88\uD638", "\uB3C4\uC11C\uBA85", "\uC800\uC790", "\uB300\uC5EC\uD604\uD669", "\uBD84\uB958", "\uB300\uC5EC\uC77C"
 				}
 			));
 		}
@@ -457,6 +459,7 @@ public class BookPanel extends JPanel {
 	private JComboBox getCbUDate() {
 		if (cbUDate == null) {
 			cbUDate = new JComboBox();
+			cbUDate.setBackground(Color.WHITE);
 			cbUDate.setModel(new DefaultComboBoxModel(new String[] {"3\uC77C", "7\uC77C"}));
 			cbUDate.setBounds(360, 451, 148, 23);
 		}
@@ -465,6 +468,7 @@ public class BookPanel extends JPanel {
 	private JComboBox getCbSort() {
 		if (cbSort == null) {
 			cbSort = new JComboBox();
+			cbSort.setBackground(Color.WHITE);
 			cbSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
 			cbSort.setBounds(288, 74, 125, 23);
 		}
@@ -473,6 +477,7 @@ public class BookPanel extends JPanel {
 	private JComboBox getCbUSort() {
 		if (cbUSort == null) {
 			cbUSort = new JComboBox();
+			cbUSort.setBackground(Color.WHITE);
 			cbUSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
 			cbUSort.setBounds(360, 418, 148, 23);
 		}
@@ -483,6 +488,7 @@ public class BookPanel extends JPanel {
 	private JComboBox getCbDate() {
 		if (cbDate == null) {
 			cbDate = new JComboBox();
+			cbDate.setBackground(Color.WHITE);
 			cbDate.setModel(new DefaultComboBoxModel(new String[] {"3\uC77C", "7\uC77C"}));
 			cbDate.setBounds(288, 118, 125, 23);
 		}

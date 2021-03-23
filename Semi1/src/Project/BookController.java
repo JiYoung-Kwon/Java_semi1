@@ -5,8 +5,6 @@ import java.util.List;
 
 public class BookController {
 	
-	public static List<Book> books = new ArrayList<Book>();
-	
 	//도서 리스트 추가
 	public String append(Book b) {
 		String msg = "데이터가 정상적으로 저장되었습니다.";
@@ -19,9 +17,9 @@ public class BookController {
 		return msg;
 	}
 	
-	public void update(int index ,String title, String author,String sort,String date) {
-		MainData.getBooks().get(index).setTitle(title);
-		MainData.getBooks().get(index).setAuthor(author);
+	public void update(int index ,String title, String author,String sort,String date) {  // 수정 메소드
+		MainData.getBooks().get(index).setTitle(title);         // 해당 인덱스의 객체 데이터를 입력 값으로 변경.
+ 		MainData.getBooks().get(index).setAuthor(author);       
 		MainData.getBooks().get(index).setSort(sort);
 		MainData.getBooks().get(index).setDate(date.replace("일", ""));	
 	}
@@ -29,11 +27,11 @@ public class BookController {
 	public String delete(Book b) {
 		String msg = "데이터가 정상적으로 삭제되었습니다.";
 		try {
-			for(int index=books.size()-1; index>=0; index--) {
-				Book target = books.get(index);
+			for(int index=MainData.getBooks().size()-1; index>=0; index--) {
+				Book target = MainData.getBooks().get(index);
 				
 				if(target.getTitle().equals(b.getTitle())) {
-					books.remove(index);
+					MainData.getBooks().remove(index);
 					break;
 				}
 			}
@@ -77,16 +75,15 @@ public class BookController {
 		
 		return returnList;     // 저장된 리스트 반환.
 	}
-//		for(int index=0; index<books.size(); index++) {
-//			Book target = books.get(index);
-//			if(target.getBookNo().indexOf(findStr)>-1 ||
-//  			   target.getTitle().indexOf(findStr)>-1 ||
-//			   target.getAuthor().indexOf(findStr)>-1 ) {
-//				returnList.add(target);
-//			}
-//			
-//		}
-//		return returnList;
+	
+	
+	public Book searchBookNo(String num) {
+	      for(int i=0; i<MainData.getBooks().size(); i++) {
+	         if(MainData.getBooks().get(i).getBookNo().equals(num))
+	            return MainData.getBooks().get(i);
+	      }
+	      return null;
+	   }
 	
 	
 	public int selectOne(String BookNo) {       // 도서 No.으로 해당 객체 인덱스 찾기
@@ -103,18 +100,3 @@ public class BookController {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

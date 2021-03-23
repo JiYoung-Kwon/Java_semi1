@@ -4,26 +4,26 @@ package Project;
 
 public class Customer {
 	
-	//id 는 휴대폰 번호
+	//phoneNum 은 휴대폰 번호 기본값
 	//irum 은 성명
 	//addess 는 주소
 	
 	
-	String id;
-	String irum;
-	String address;
+	private String phoneNum;
+	private String irum;
+	private String address;
 	
-	public Customer(String id, String irum, String address) {
-		this.id = id;
+	public Customer(String phoneNum, String irum, String address) {
+		this.phoneNum = phoneNum;
 		this.irum = irum;
 		this.address = address;
 	}
 	
-	public String getId() {
-		return id;
+	public String getPhoneNum() {
+		return phoneNum;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
 	}
 	public String getIrum() {
 		return irum;

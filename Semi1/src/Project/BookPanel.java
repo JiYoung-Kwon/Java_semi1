@@ -1,22 +1,25 @@
 package Project;
 
-import javax.swing.JPanel;
 import java.awt.Color;
-import javax.swing.JButton;
 import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JComboBox;
+import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 public class BookPanel extends JPanel {
 	private JButton btnNewButton;
@@ -25,16 +28,16 @@ public class BookPanel extends JPanel {
 	private JTextField tfAuthor;
 	private JLabel lblNewLabel_3_1_1;
 	private JLabel lblNewLabel_3;
-	private JTextField tfName;
+	private JTextField tfTitle;
 	private JLabel lblNewLabel_5_1_1_1;
 	private JLabel lblNewLabel_5;
 	private JLabel lblNewLabel_3_2;
 	private JTextField tfUAuthor;
 	private JButton btnNewButton_1_1_1_1;
 	private JLabel lblNewLabel_3_1_2;
-	private JTextField tfUName;
+	private JTextField tfUTitle;
 	private JLabel lblNewLabel_3_1_1_1;
-	private JTextField tfUNum;
+	private JTextField tfUBookNo;
 	private JButton btnNewButton_1_1_1;
 	private JLabel lblNewLabel_5_1;
 	private JLabel lblNewLabel_5_1_1;
@@ -51,16 +54,17 @@ public class BookPanel extends JPanel {
 		setBackground(Color.WHITE);
 		setLayout(null);
 		add(getCbDate());
+		add(getChckbxNewCheckBox());
 		add(getBtnNewButton());
 		add(getCbUDate());
-		add(getCbBr());
-		add(getCbUBr());
+		add(getCbSort());
+		add(getCbUSort());
 		add(getBtnNewButton_1_2());
 		add(getLblNewLabel_3_1());
 		add(getTfAuthor());
 		add(getLblNewLabel_3_1_1());
 		add(getLblNewLabel_3());
-		add(getTfName());
+		add(getTfTitle());
 		add(getLblNewLabel_3_1_1_2());
 		add(getLblNewLabel_5_1_1_1());
 		add(getLblNewLabel_5());
@@ -70,55 +74,77 @@ public class BookPanel extends JPanel {
 		add(getTfUAuthor());
 		add(getBtnNewButton_1_1_1_1());
 		add(getLblNewLabel_3_1_2());
-		add(getTfUName());
+		add(getTfUTitle());
 		add(getLblNewLabel_3_1_1_1());
-		add(getTfUNum());
+		add(getTfUBookNo());
 		add(getBtnNewButton_1_1_1());
 		add(getLblNewLabel_5_1());
 		add(getLblNewLabel_5_1_1());
 		add(getScrollPane());
 	
+	
 
 	}
+	boolean searchCheck = false; // No.으로 검색시 체크박스여부 확인
 	
-	int count=0;
-	BookController bc;
+	
 	private JLabel lblNewLabel_3_2_1;
 	private JLabel lblNewLabel_3_1_2_1;
 	private JLabel lblNewLabel_3_1_1_2;
 	private JComboBox comboBox_1;
 	private JComboBox cbUDate;
-	private JComboBox cbBr;
-	private JComboBox cbUBr;
+	private JComboBox cbSort;
+	private JComboBox cbUSort;
 	private JComboBox cbDate;
+	private JCheckBox chckbxNewCheckBox;
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
-			btnNewButton = new JButton("\uAC80\uC0C9");
+			btnNewButton = new JButton("\uAC80\uC0C9");      // 검색 버튼
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					bc = new BookController();
-					String findStr = tfName.getText();
 					
-					DefaultTableModel model = 
+					DefaultTableModel model =               // 모델 생성
 							(DefaultTableModel)table.getModel();
-					model.setRowCount(0);//기존 표시된 데이터를 모두 삭제
+					model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
 					
-					if(findStr.equals("")) {
+					if(tfTitle.getText().length()==0&&tfAuthor.getText().length()==0) {
+						for(int i=0; i<MainData.getBooks().size(); i++) {
+							Book b = MainData.getBooks().get(i);
+							String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+							model.addRow(data);}}
+						
+						
+						
+					 // 알림말로 변경해야함.
+					else {String findStr = tfTitle.getText();     // 찾는 검색어
+					      String findStr2 = tfAuthor.getText();   // 찾는 저자 
+					     List<Book> list = MainData.bookC.search(findStr, findStr2);
+					     	
+								for(int i=0; i<list.size(); i++) {
+									Book b = list.get(i);
+									String[] data = {"넘버",b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+									model.addRow(data);
+								}}
+					
+				    
+					
+					/*  if(findStr.equals("")) {
 						for(int i=0; i<BookController.books.size(); i++) {
 						Book b = BookController.books.get(i);
-						String[] data = {String.format("%s", b.getNum()), b.getName(), b.getAuthor(),"", b.getBr(),b.getDate()};
+						String[] data = {String.format("%s", b.getBookNo()), b.getTitle(), b.getAuthor(),"", b.getSort(),b.getDate()};
 						model.addRow(data);}
 						}
 					else {
 					for(int i=0; i<BookController.books.size(); i++) {
 						Book b = BookController.books.get(i);
-						if(b.name.equals(findStr)) {
-							String[] data = {String.format("%s", b.getNum()), b.getName(), b.getAuthor(), "", b.getBr(), b.getDate()};
-						model.addRow(data);}
-					}
-					}	
+						if(b.title.equals(findStr)) {
+							String[] data = {String.format("%s", b.getBookNo()), b.getTitle(), b.getAuthor(), "", b.getSort(), b.getDate()};
+						model.addRow(data);}}}
+						*/
 					
+						
 				}
+				
 			});
 			btnNewButton.setForeground(Color.WHITE);
 			btnNewButton.setFont(new Font("굴림", Font.PLAIN, 12));
@@ -134,27 +160,25 @@ public class BookPanel extends JPanel {
 			btnNewButton_1_2 = new JButton("\uB4F1\uB85D");
 			btnNewButton_1_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				    count++;
-				    
 				    		
-					String bName = tfName.getText();
+					 
+					String bTitle = tfTitle.getText();
 					String bAuthor = tfAuthor.getText();
-					String br = (String) cbBr.getSelectedItem();
-					String date = (String) cbDate.getSelectedItem();
+					String bSort = (String) cbSort.getSelectedItem();
+					String bDate = (String) cbDate.getSelectedItem();
 					
 					
-					Book b = new Book(count,bName, bAuthor,br,date);
-					bc = new BookController();
-					String msg = bc.append(b);
+					Book b = new Book(bTitle, bAuthor, bSort, bDate.replace("일", ""));
+					String msg = MainData.bookC.append(b);
 					JOptionPane.showMessageDialog(null, msg);
 					
 					DefaultTableModel model = 
 							(DefaultTableModel)table.getModel();
 					model.setRowCount(0);//기존 표시된 데이터를 모두 삭제
 					
-					for(int i=0; i<BookController.books.size(); i++) {
-						b = BookController.books.get(i);
-						String[] data = {String.format("%s", b.getNum()), b.getName(), b.getAuthor(),"", b.getBr(),b.getDate()};
+					for(int i=0; i<MainData.getBooks().size(); i++) {
+						b = MainData.getBooks() .get(i);
+						String[] data = {b.getBookNo(), b.getTitle(), b.getAuthor(),"", b.getSort(),String.format("%s일", b.getDate())};
 						model.addRow(data);}
 					
 				}
@@ -202,14 +226,14 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3;
 	}
-	public JTextField getTfName() {
-		if (tfName == null) {
-			tfName = new JTextField();
-			tfName.setDragEnabled(true);
-			tfName.setColumns(10);
-			tfName.setBounds(103, 31, 310, 23);
+	public JTextField getTfTitle() {
+		if (tfTitle == null) {
+			tfTitle = new JTextField();
+			tfTitle.setDragEnabled(true);
+			tfTitle.setColumns(10);
+			tfTitle.setBounds(103, 31, 252, 23);
 		}
-		return tfName;
+		return tfTitle;
 	}
 	public JLabel getLblNewLabel_5_1_1_1() {
 		if (lblNewLabel_5_1_1_1 == null) {
@@ -266,13 +290,13 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2;
 	}
-	public JTextField getTfUName() {
-		if (tfUName == null) {
-			tfUName = new JTextField();
-			tfUName.setColumns(10);
-			tfUName.setBounds(103, 451, 148, 23);
+	public JTextField getTfUTitle() {
+		if (tfUTitle == null) {
+			tfUTitle = new JTextField();
+			tfUTitle.setColumns(10);
+			tfUTitle.setBounds(103, 451, 148, 23);
 		}
-		return tfUName;
+		return tfUTitle;
 	}
 	public JLabel getLblNewLabel_3_1_1_1() {
 		if (lblNewLabel_3_1_1_1 == null) {
@@ -283,20 +307,44 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1_1;
 	}
-	public JTextField getTfUNum() {
-		if (tfUNum == null) {
-			tfUNum = new JTextField();
-			tfUNum.setEnabled(false);
-			tfUNum.setColumns(10);
-			tfUNum.setBounds(103, 418, 148, 23);
+	public JTextField getTfUBookNo() {
+		if (tfUBookNo == null) {
+			tfUBookNo = new JTextField();
+			tfUBookNo.setEnabled(false);
+			tfUBookNo.setColumns(10);
+			tfUBookNo.setBounds(103, 418, 148, 23);
 		}
-		return tfUNum;
+		return tfUBookNo;
 	}
 	public JButton getBtnNewButton_1_1_1() {
 		if (btnNewButton_1_1_1 == null) {
-			btnNewButton_1_1_1 = new JButton("\uC218\uC815");
+			btnNewButton_1_1_1 = new JButton("\uC218\uC815");     // 수정 버튼
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+				String findStr = tfUBookNo.getText(); // 찾을 값 (No.)
+				
+				String title  = tfUTitle.getText();
+				String author =  tfUAuthor.getText();
+				String sort   = (String) cbUSort.getSelectedItem();
+				String date   = (String) cbUDate.getSelectedItem();
+				
+				int index = MainData.bookC.selectOne(findStr);
+				if(index < 0) {System.out.println("찾는값이 없습니다.");}
+				else {
+				MainData.bookC.update(index, title, author, sort, date);
+				
+				List<Book> list = MainData.bookC.search(findStr);
+			     
+				DefaultTableModel model =               // 모델 생성
+						(DefaultTableModel)table.getModel();
+				model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
+		   							
+					for(int i=0; i<list.size(); i++) {
+						Book b = list.get(i);
+						String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
+						model.addRow(data);}				
+				}
+				
 				
 				}
 			});
@@ -346,8 +394,8 @@ public class BookPanel extends JPanel {
 					
 					int row = table.getSelectedRow();
 					
-					tfUNum.setText((String) table.getModel().getValueAt(row, 0));
-					tfUName.setText((String) table.getModel().getValueAt(row, 1));
+					tfUBookNo.setText((String) table.getModel().getValueAt(row, 0));
+					tfUTitle.setText((String) table.getModel().getValueAt(row, 1));
 					tfUAuthor.setText((String) table.getModel().getValueAt(row, 2));
 					
 					
@@ -414,21 +462,21 @@ public class BookPanel extends JPanel {
 		}
 		return cbUDate;
 	}
-	private JComboBox getCbBr() {
-		if (cbBr == null) {
-			cbBr = new JComboBox();
-			cbBr.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
-			cbBr.setBounds(288, 74, 125, 23);
+	private JComboBox getCbSort() {
+		if (cbSort == null) {
+			cbSort = new JComboBox();
+			cbSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
+			cbSort.setBounds(288, 74, 125, 23);
 		}
-		return cbBr;
+		return cbSort;
 	}
-	private JComboBox getCbUBr() {
-		if (cbUBr == null) {
-			cbUBr = new JComboBox();
-			cbUBr.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
-			cbUBr.setBounds(360, 418, 148, 23);
+	private JComboBox getCbUSort() {
+		if (cbUSort == null) {
+			cbUSort = new JComboBox();
+			cbUSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
+			cbUSort.setBounds(360, 418, 148, 23);
 		}
-		return cbUBr;
+		return cbUSort;
 	}
 	
 
@@ -439,5 +487,22 @@ public class BookPanel extends JPanel {
 			cbDate.setBounds(288, 118, 125, 23);
 		}
 		return cbDate;
+	}
+	public JCheckBox getChckbxNewCheckBox() {
+		if (chckbxNewCheckBox == null) {
+			chckbxNewCheckBox = new JCheckBox("No.");
+			chckbxNewCheckBox.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+			
+					
+					System.out.println(searchCheck);
+				}
+			});
+			chckbxNewCheckBox.setForeground(new Color(255, 255, 255));
+			chckbxNewCheckBox.setBackground(new Color(102, 51, 0));
+			chckbxNewCheckBox.setBounds(366, 32, 62, 23);
+		}
+		return chckbxNewCheckBox;
 	}
 }

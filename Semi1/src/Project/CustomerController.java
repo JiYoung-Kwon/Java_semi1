@@ -9,8 +9,6 @@ import javax.swing.JOptionPane;
 
 public class CustomerController {
 
-	MainData md = new MainData(); // 테스트용
-
 	// 회원 정보 입력기능
 	public String append(Customer c, boolean isSame) {
 		String msg = "데이터가 정상적으로 저장되었습니다.";
@@ -35,21 +33,24 @@ public class CustomerController {
 	}
 
 	// 수정 기능
-	public String update(String id, String irum, String address) {
+	public String update(String id, String phoneNum, String irum, String address) {
 		String msg = "데이터가 정상적으로 수정되었습니다.";
 
+		
 		try {
 			if (id.length() == 0)
 				msg = "값을 선택해주세요.";
 			// 빈칸이 있을 경우
-			else if (!(irum.length() != 0 && address.length() != 0))
+			else if (!(id.length() != 0 && irum.length() != 0 && address.length() != 0))
 				msg = "수정할 값을 입력해주세요.";
 			else {
 				// 리스트 내용 수정
 				for (int index = 0; index < MainData.getCustomers().size(); index++) {
 					Customer target = MainData.getCustomers().get(index);
-
+					
 					if (target.getPhoneNum().equals(id)) {
+						
+						MainData.getCustomers().get(index).setPhoneNum(phoneNum);
 						MainData.getCustomers().get(index).setIrum(irum);
 						MainData.getCustomers().get(index).setAddress(address);
 						break;

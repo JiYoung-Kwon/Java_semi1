@@ -45,7 +45,8 @@ public class CustomerPanel extends JPanel {
 	 * Create the panel.
 	 */
 	boolean isSame = false;
-
+	String defaultId = null;
+	
 	public CustomerPanel() {
 		setBackground(Color.WHITE);
 		setLayout(null);
@@ -278,7 +279,6 @@ public class CustomerPanel extends JPanel {
 	public JTextField getTfUPhoneNum() {
 		if (tfUPhoneNum == null) {
 			tfUPhoneNum = new JTextField();
-			tfUPhoneNum.setEditable(false);
 			tfUPhoneNum.setColumns(10);
 			tfUPhoneNum.setBounds(103, 451, 174, 23);
 		}
@@ -311,7 +311,7 @@ public class CustomerPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 
 					String irum = tfUIrum.getText();
-					String id = tfUPhoneNum.getText().replaceAll("\\D", ""); // get으로 받아온 번호의 하이픈(-)제거 기능
+					String phoneNum = tfUPhoneNum.getText().replaceAll("\\D", ""); // get으로 받아온 번호의 하이픈(-)제거 기능
 					String address = tfUAddress.getText();
 
 					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 수정 하시겠습니까?", "Confirm",
@@ -320,7 +320,7 @@ public class CustomerPanel extends JPanel {
 
 					} else if (result == JOptionPane.YES_OPTION) {
 
-						String msg = MainData.customerC.update(id, irum, address);
+						String msg = MainData.customerC.update(defaultId, phoneNum, irum, address);
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
 
 						reTable();
@@ -375,10 +375,12 @@ public class CustomerPanel extends JPanel {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					int row = table.getSelectedRow();
-
+							
 					tfUIrum.setText((String) table.getModel().getValueAt(row, 0));
 					tfUPhoneNum.setText((String) table.getModel().getValueAt(row, 1));
 					tfUAddress.setText((String) table.getModel().getValueAt(row, 2));
+					
+					defaultId = ((String) table.getModel().getValueAt(row, 1)).replaceAll("\\D", "");
 
 				}
 			});

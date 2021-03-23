@@ -4,51 +4,65 @@ package Project;
 
 public class CheckOut {
 
-	//필요데이터 : id, 대여일자, 대여자, 대여할 책
-	//대여자 : 고객 클래스의 id
-	//대여할 책 : 도서 클래스의 id
-	
-	int id;
-	String date;
-	String irum;
-	String title;
-	String phone;
-	String coDate;
-	String ciDate;
-	String returnDate;
-	
-	CheckOut(){};
-	
-	CheckOut(int id, String title,String irum,String phone,String coDate,String ciDate,String returnDate){
-		this.id = id;
+	private int id = 1; // 대여목록 키 초기값
+	private static int idCnt = 0; // 객체 생성 시 id+=idCnt++로 id값 1씩 증가.
+	private String irum; // 대여자 이름
+	private String phone; // 대여자 번호
+	private String bookNo; // 대여도서 번호
+	private String title; // 대여도서 제목
+	private String coDate; // 도서 대여일
+	private String ciDate; // 도서 반납일
+	private String returnDate; // 실제 반납일(반납현황)
+
+	// CheckOut(){};
+
+	CheckOut(String bookNo, String title, String irum, String phone, String coDate, String ciDate) {
+		this.id = id + idCnt++;
+		this.bookNo = bookNo;
 		this.irum = irum;
 		this.title = title;
 		this.phone = phone;
 		this.coDate = coDate;
 		this.ciDate = ciDate;
-		this.returnDate = returnDate;
-	}
-	
-	
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
+		this.returnDate = null;
 	}
 
+	public String getId() {
+		return Integer.toString(id);
+	}
+ 
 	public String getIrum() {
 		return irum;
 	}
-	public void setIrum(String irum) {
-		this.irum = irum;
+
+//	public void setIrum(String irum) {
+//		this.irum = irum;
+//	}
+
+	public String getPhone() {
+		return phone;
 	}
+
+//	public void setPhone(String phone) {
+//		this.phone = phone;
+//	}
+
+	public String getBookNo() {
+		return bookNo;
+	}
+
+//	public void setBookNo(String bookNo) {
+//		this.bookNo = bookNo;
+//	}
+
+	public String getTitle() {
+		return title;
+	}
+
+//	public void setTitle(String title) {
+//		this.title = title;
+//	}
+
 	public String getCoDate() {
 		return coDate;
 	}
@@ -72,12 +86,4 @@ public class CheckOut {
 	public void setReturnDate(String returnDate) {
 		this.returnDate = returnDate;
 	}
-
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
 }

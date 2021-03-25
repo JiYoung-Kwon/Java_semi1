@@ -15,6 +15,7 @@ public class CheckInController {
 		if (id == null)
 			msg = "반납할 목록을 선택하세요.";
 
+		// 반납 시, 반납 현황 일자 -> 현재 날짜로 추가
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		Date now = new Date();
 		String returnDate = format1.format(now);
@@ -25,6 +26,10 @@ public class CheckInController {
 			for (int index = 0; index < MainData.getCheckOutInfo().size(); index++) {
 
 				if (MainData.getCheckOutInfo().get(index).getId().equals(id)) { // string 값 -> equals로 비교해야 함!
+					if (MainData.getCheckOutInfo().get(index).getReturnDate() != null) {
+						msg = "이미 반납된 책입니다.";
+						break;
+					}
 					MainData.getCheckOutInfo().get(index).setReturnDate(returnDate);
 					break;
 				}

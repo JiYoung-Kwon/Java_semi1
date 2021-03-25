@@ -80,9 +80,26 @@ public class CustomerPanel extends JPanel {
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String findId = tfPhoneNum.getText();
-					List<Customer> list = MainData.customerC.search(findId);
+					String findIrum = tfIrum.getText();
 					
-					reTable();
+					if(!(findId.length() == 0 && findIrum.length() == 0)) {	//찾는 대상의 입력이 공란일 경우
+						if(findId.length() == 0)
+							findId = "";
+						if(findIrum.length() == 0)
+							findIrum = "";
+					}
+					
+					List<Customer> list = MainData.customerC.search(findId,findIrum);
+					
+					DefaultTableModel model = (DefaultTableModel) table.getModel();	//테이블에 데이터 표시
+					model.setRowCount(0);
+					for (int i = 0; i < list.size(); i++) {
+						Customer c = list.get(i);
+						String src = MainData.customerC.phone(c.getPhoneNum()); // 전화번호 하이픈 생성을 위한 phone 메서드 호출
+						String[] data = { c.getIrum(), src, c.getAddress() };	//data배열에 순서대로 저장
+						model.addRow(data);
+					}
+
 				}
 			});
 			btnNewButton.setForeground(Color.WHITE);
@@ -103,8 +120,7 @@ public class CustomerPanel extends JPanel {
 					String cId = tfPhoneNum.getText();
 					String cIrum = tfIrum.getText();
 					String cAddress = tfAddress.getText();
-					System.out.println(MainData.getCustomers().size());
-
+					
 					// 확인 여부 메세지 출력
 					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 등록 하시겠습니까?", "Confirm",
 							JOptionPane.YES_NO_OPTION);
@@ -115,17 +131,17 @@ public class CustomerPanel extends JPanel {
 							// 아이디 존재 여부
 							for (int i = 0; i < MainData.getCustomers().size(); i++) {
 								Customer c1 = MainData.getCustomers().get(i);
-								if (c1.getPhoneNum().equals(cId)) {
+								if (c1.getPhoneNum().equals(cId)) {	//아이디 중복일 경우
 									isSame = true;
 									break;
 								}
 							}
 						}
-						Customer c = new Customer(cId, cIrum, cAddress);
+						Customer c = new Customer(cId, cIrum, cAddress);	//배열에 새로운 정보 저장
 						String msg = MainData.customerC.append(c, isSame);
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
 
-						reTable();
+						reTable();	// 테이블 내용 최신화
 
 						isSame = false;
 					}
@@ -250,7 +266,7 @@ public class CustomerPanel extends JPanel {
 					int result = JOptionPane.showConfirmDialog(CustomerPanel.this, "회원 정보를 삭제 하시겠습니까?", "confirm",
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
-						String msg = MainData.customerC.delete(id);
+						String msg = MainData.customerC.delete(id);	//해당 데이터 삭제
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
 					}
 
@@ -320,10 +336,10 @@ public class CustomerPanel extends JPanel {
 
 					} else if (result == JOptionPane.YES_OPTION) {
 
-						String msg = MainData.customerC.update(defaultId, phoneNum, irum, address);
+						String msg = MainData.customerC.update(defaultId, phoneNum, irum, address);	//새로운 정보로 수정
 						JOptionPane.showMessageDialog(CustomerPanel.this, msg);
 
-						reTable();
+						reTable();	//테이블 내용 최신화
 					}
 				}
 			});
@@ -400,24 +416,15 @@ public class CustomerPanel extends JPanel {
 		return table;
 	}
 
-	public String phone(String src) { // 전화번호 입력시 하이픈(-)이 추가되도록 하는 정규식 메서드
-		if (src == null) {
-			return "";
-		}
-		if (src.length() == 8) {
-			return src.replaceFirst("^([0-9]{4})([0-9]{4})$", "$1-$2");
-		} else if (src.length() == 12) {
-			return src.replaceFirst("(^[0-9]{4})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
-		}
-		return src.replaceFirst("(^02|[0-9]{3})([0-9]{3,4})([0-9]{4})$", "$1-$2-$3");
-	}
 
-	public void reTable() {
+	
+		
+	public void reTable() {	//테이블 내용 최신화에 쓰이는 메서드
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.setRowCount(0);
 		for (int j = 0; j < MainData.getCustomers().size(); j++) {
 			Customer c = MainData.getCustomers().get(j);
-			String src = phone(c.getPhoneNum()); // 전화번호 하이픈 생성을 위한 phone 메서드 호출
+			String src = MainData.customerC.phone(c.getPhoneNum()); // 전화번호 하이픈 생성을 위한 phone 메서드 호출
 			String[] data = { c.getIrum(), src, c.getAddress() };
 			model.addRow(data);
 		}

@@ -114,7 +114,8 @@ public class CheckInPanel extends JPanel {
 					String id = tfId;
 
 					String msg = "반납하시겠습니까?";
-					int result = JOptionPane.showConfirmDialog(CheckInPanel.this, msg);
+					
+					int result = JOptionPane.showConfirmDialog(CheckInPanel.this, msg, "confirm", JOptionPane.YES_NO_OPTION);
 
 					if (result == JOptionPane.YES_OPTION) {
 						msg = MainData.checkInC.append(id);
@@ -212,8 +213,8 @@ public class CheckInPanel extends JPanel {
 					JOptionPane.showMessageDialog(CheckInPanel.this, msg);
 
 					reTable();
-					
-					//삭제했을 경우, 텍스트필드 비우기
+
+					// 삭제했을 경우, 텍스트필드 비우기
 					tfId = null;
 					tfTitle.setText(null);
 					tfIrum.setText(null);
@@ -230,7 +231,7 @@ public class CheckInPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1_1;
 	}
- 
+
 	public JLabel getLblNewLabel_3_1_2() {
 		if (lblNewLabel_3_1_2 == null) {
 			lblNewLabel_3_1_2 = new JLabel("\uC774\uB984");
@@ -351,40 +352,34 @@ public class CheckInPanel extends JPanel {
 	public JTable getTable() {
 		if (table == null) {
 			table = new JTable();
-			DefaultTableModel model = new DefaultTableModel(
-					new Object[][] { { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, { null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null },
-							{ null, null, null, null, null, null, null }, },
-					new String[] { "NO.", "\uB3C4\uC11C\uBA85", "\uB300\uC5EC\uC790", "\uC804\uD654\uBC88\uD638",
-							"\uB300\uC5EC\uC77C\uC790", "\uBC18\uB0A9\uC77C\uC790", "\uBC18\uB0A9\uD604\uD669" });
-
-			table.setModel(model);
-			table = new JTable(model);
+			table.setModel(new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"NO.", "\uB3C4\uC11C\uBA85", "\uB300\uC5EC\uC790", "\uC804\uD654\uBC88\uD638", "\uB300\uC5EC\uC77C\uC790", "\uBC18\uB0A9\uC77C\uC790", "\uBC18\uB0A9\uD604\uD669"
+				}
+			));
+			table.getColumnModel().getColumn(0).setPreferredWidth(30);
+			table.getColumnModel().getColumn(0).setMaxWidth(60);
+			table.getColumnModel().getColumn(1).setPreferredWidth(130);
+			table.getColumnModel().getColumn(1).setMinWidth(100);
+			table.getColumnModel().getColumn(3).setPreferredWidth(100);
+			table.getColumnModel().getColumn(3).setMinWidth(60);
+//			table = new JTable(model);
 
 			table.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					table.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
 
-							int row = table.getSelectedRow();
-							// int col = table.getSelectedColumn();
+					int row = table.getSelectedRow();
+					// int col = table.getSelectedColumn();
 
-							tfId = (String) table.getModel().getValueAt(row, 0);
-							tfTitle.setText((String) table.getModel().getValueAt(row, 1));
-							tfIrum.setText((String) table.getModel().getValueAt(row, 2));
-							tfPhone.setText((String) table.getModel().getValueAt(row, 3));
-							tfCODate.setText((String) table.getModel().getValueAt(row, 4));
-							tfCIDate.setText((String) table.getModel().getValueAt(row, 5));
-						}
-					});
+					tfId = (String) table.getModel().getValueAt(row, 0);
+					tfTitle.setText((String) table.getModel().getValueAt(row, 1));
+					tfIrum.setText((String) table.getModel().getValueAt(row, 2));
+					tfPhone.setText((String) table.getModel().getValueAt(row, 3));
+					tfCODate.setText((String) table.getModel().getValueAt(row, 4));
+					tfCIDate.setText((String) table.getModel().getValueAt(row, 5));
 				}
 			});
 		}
@@ -392,6 +387,7 @@ public class CheckInPanel extends JPanel {
 		return table;
 	}
 
+	//조회 테이블 갱신
 	public void reTable() {
 		String findStr = tfFindTitle.getText();
 		String type = comboBox.getSelectedItem().toString();
@@ -401,7 +397,8 @@ public class CheckInPanel extends JPanel {
 		model.setRowCount(0);
 		for (int i = 0; i < list.size(); i++) {
 			CheckOut c = list.get(i);
-			String[] data = { c.getId(), c.getTitle(), c.getIrum(), c.getPhone(), c.getCoDate(), c.getCiDate(),
+			String src = MainData.customerC.phone(c.getPhone());
+			String[] data = { c.getId(), c.getTitle(), c.getIrum(), src, c.getCoDate(), c.getCiDate(),
 					c.getReturnDate() };
 			model.addRow(data);
 		}

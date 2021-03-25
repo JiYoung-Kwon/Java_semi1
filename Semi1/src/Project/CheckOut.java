@@ -35,17 +35,17 @@ public class CheckOut {
 		return irum;
 	}
 
-//	public void setIrum(String irum) {
-//		this.irum = irum;
-//	}
+	public void setIrum(String irum) {
+		this.irum = irum;
+	}
 
 	public String getPhone() {
 		return phone;
 	}
 
-//	public void setPhone(String phone) {
-//		this.phone = phone;
-//	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	public String getBookNo() {
 		return bookNo;
@@ -59,9 +59,9 @@ public class CheckOut {
 		return title;
 	}
 
-//	public void setTitle(String title) {
-//		this.title = title;
-//	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public String getCoDate() {
 		return coDate;

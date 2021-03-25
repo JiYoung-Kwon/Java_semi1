@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class BookPanel extends JPanel {
@@ -48,9 +49,7 @@ public class BookPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public BookPanel() {
-		
 
-		
 		setBackground(Color.WHITE);
 		setLayout(null);
 		add(getCbDate());
@@ -80,13 +79,9 @@ public class BookPanel extends JPanel {
 		add(getLblNewLabel_5_1());
 		add(getLblNewLabel_5_1_1());
 		add(getScrollPane());
-	
-	
 
 	}
-	boolean searchCheck = false; // No.으로 검색시 체크박스여부 확인
-	
-	
+
 	private JLabel lblNewLabel_3_2_1;
 	private JLabel lblNewLabel_3_1_2_1;
 	private JLabel lblNewLabel_3_1_1_2;
@@ -95,54 +90,44 @@ public class BookPanel extends JPanel {
 	private JComboBox cbSort;
 	private JComboBox cbUSort;
 	private JComboBox cbDate;
+
 	public JButton getBtnNewButton() {
 		if (btnNewButton == null) {
-			btnNewButton = new JButton("\uAC80\uC0C9");      // 검색 버튼
+			btnNewButton = new JButton("\uAC80\uC0C9"); // 검색 버튼
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
-					DefaultTableModel model =               // 모델 생성
-							(DefaultTableModel)table.getModel();
-					model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
-					
-					if(tfTitle.getText().length()==0&&tfAuthor.getText().length()==0) {      // 도서명과 저자의 검색어가 없을경우.
-						for(int i=0; i<MainData.getBooks().size(); i++) {                    // Books 리스트에 있는 객체를 전부 출력하기.
-							Book b = MainData.getBooks().get(i);
-							String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
-							model.addRow(data);}}
-						
-						
-						
-					 // 검색어가 둘중 하나 이상 있는 경우.
-					else {String findStr = tfTitle.getText();     // 찾는 검색어(도서명 or No.)               
-					      String findStr2 = tfAuthor.getText();   // 찾는 저자 
-					     List<Book> list = MainData.bookC.search(findStr, findStr2);   // 검색어와 일치하는 해당 객체의 리스트를 불러오는 메소드.
-					     	
-								for(int i=0; i<list.size(); i++) {       // 해당 객체들의 리스트를 출력.
-									Book b = list.get(i);
-									String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
-									model.addRow(data);
-								}}
-					
-				    
-					
-					/*  if(findStr.equals("")) {
-						for(int i=0; i<BookController.books.size(); i++) {
-						Book b = BookController.books.get(i);
-						String[] data = {String.format("%s", b.getBookNo()), b.getTitle(), b.getAuthor(),"", b.getSort(),b.getDate()};
-						model.addRow(data);}
+
+					DefaultTableModel model = // 모델 생성
+							(DefaultTableModel) table.getModel();
+					model.setRowCount(0); // 기존 표시된 데이터를 모두 삭제
+
+					if (tfTitle.getText().length() == 0 && tfAuthor.getText().length() == 0) { // 도서명과 저자의 검색어가 없을경우.
+						reTable();    // reTable로 전체 리스트 출력
 						}
-					else {
-					for(int i=0; i<BookController.books.size(); i++) {
-						Book b = BookController.books.get(i);
-						if(b.title.equals(findStr)) {
-							String[] data = {String.format("%s", b.getBookNo()), b.getTitle(), b.getAuthor(), "", b.getSort(), b.getDate()};
-						model.addRow(data);}}}
-						*/
 					
-						
+
+					// 검색어가 둘중 하나 이상 있는 경우.
+					else {
+						String findStr = tfTitle.getText(); // 찾는 도서명
+						String findStr2 = tfAuthor.getText(); // 찾는 저자
+						List<Book> list = MainData.bookC.search(findStr, findStr2); // 검색어와 일치하는 해당 객체의 리스트를 불러오는 메소드.
+
+						for (int i = 0; i < list.size(); i++) { // 검색어와 일치하는 객체들의 리스트를 출력.
+							Book b = list.get(i);
+							String BookStatus = "";
+							if (MainData.checkOutCtrl.getCheckOutAble(b.getBookNo()).equals("대여가능")) {
+								BookStatus = "O";
+							} else {
+								BookStatus = "X";
+							}
+							String[] data = { b.getBookNo(), b.getTitle(), b.getAuthor(), BookStatus, b.getSort(),
+									String.format("%s일", b.getDate()) };
+							model.addRow(data);
+						}
+					}
+
 				}
-				
+
 			});
 			btnNewButton.setForeground(Color.WHITE);
 			btnNewButton.setFont(new Font("굴림", Font.PLAIN, 12));
@@ -151,34 +136,32 @@ public class BookPanel extends JPanel {
 			btnNewButton.setBounds(448, 30, 68, 23);
 		}
 		return btnNewButton;
-		
+
 	}
+
 	public JButton getBtnNewButton_1_2() {
 		if (btnNewButton_1_2 == null) {
 			btnNewButton_1_2 = new JButton("\uB4F1\uB85D");
 			btnNewButton_1_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				    		
-					 
-					String bTitle = tfTitle.getText();          //텍스트 필드에서 값 불러와서 각 변수에 저장.
+
+					String bTitle = tfTitle.getText(); // 텍스트 필드에서 값 불러와서 각 변수에 저장.
 					String bAuthor = tfAuthor.getText();
 					String bSort = (String) cbSort.getSelectedItem();
 					String bDate = (String) cbDate.getSelectedItem();
-					
-					
-					Book b = new Book(bTitle, bAuthor, bSort, bDate.replace("일", ""));   // 각 변수값들 Book 객체에 저장
-					String msg = MainData.bookC.append(b);                  // 생성된 객체를 books 리스트에 저장
-					JOptionPane.showMessageDialog(null, msg);               // 생성 확인 메시지 출력.
-					
-					DefaultTableModel model =                            
-							(DefaultTableModel)table.getModel();
-					model.setRowCount(0);//기존 표시된 데이터를 모두 삭제
-					
-					for(int i=0; i<MainData.getBooks().size(); i++) {    // Books에 있는 객체 모두 model에 출력하기.
-						b = MainData.getBooks() .get(i);
-						String[] data = {b.getBookNo(), b.getTitle(), b.getAuthor(),"", b.getSort(),String.format("%s일", b.getDate())};
-						model.addRow(data);}
-					
+
+					int result = JOptionPane.showConfirmDialog(BookPanel.this, "도서를 등록 하시겠습니까?", "Confirm",
+							JOptionPane.YES_NO_OPTION);
+
+					if (result == JOptionPane.YES_OPTION) {
+						
+						Book b = new Book(bTitle, bAuthor, bSort, bDate.replace("일", "")); // 각 변수값들 Book 객체에 저장
+						String msg = MainData.bookC.append(b); // 생성된 객체를 books 리스트에 저장
+						JOptionPane.showMessageDialog(BookPanel.this, msg); // 생성 확인 메시지 출력.
+
+						reTable();  //테이블에 출력
+
+					}
 				}
 			});
 			btnNewButton_1_2.setForeground(Color.WHITE);
@@ -189,6 +172,7 @@ public class BookPanel extends JPanel {
 		}
 		return btnNewButton_1_2;
 	}
+
 	public JLabel getLblNewLabel_3_1() {
 		if (lblNewLabel_3_1 == null) {
 			lblNewLabel_3_1 = new JLabel("\uC800\uC790");
@@ -198,6 +182,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1;
 	}
+
 	public JTextField getTfAuthor() {
 		if (tfAuthor == null) {
 			tfAuthor = new JTextField();
@@ -206,6 +191,7 @@ public class BookPanel extends JPanel {
 		}
 		return tfAuthor;
 	}
+
 	public JLabel getLblNewLabel_3_1_1() {
 		if (lblNewLabel_3_1_1 == null) {
 			lblNewLabel_3_1_1 = new JLabel("\uBD84\uB958");
@@ -215,6 +201,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1;
 	}
+
 	public JLabel getLblNewLabel_3() {
 		if (lblNewLabel_3 == null) {
 			lblNewLabel_3 = new JLabel("\uB3C4\uC11C\uBA85");
@@ -224,6 +211,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3;
 	}
+
 	public JTextField getTfTitle() {
 		if (tfTitle == null) {
 			tfTitle = new JTextField();
@@ -233,6 +221,7 @@ public class BookPanel extends JPanel {
 		}
 		return tfTitle;
 	}
+
 	public JLabel getLblNewLabel_5_1_1_1() {
 		if (lblNewLabel_5_1_1_1 == null) {
 			lblNewLabel_5_1_1_1 = new JLabel("");
@@ -242,6 +231,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5() {
 		if (lblNewLabel_5 == null) {
 			lblNewLabel_5 = new JLabel("");
@@ -251,6 +241,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_5;
 	}
+
 	public JLabel getLblNewLabel_3_2() {
 		if (lblNewLabel_3_2 == null) {
 			lblNewLabel_3_2 = new JLabel("\uB3C4\uC11C\uBA85");
@@ -260,6 +251,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_2;
 	}
+
 	public JTextField getTfUAuthor() {
 		if (tfUAuthor == null) {
 			tfUAuthor = new JTextField();
@@ -268,25 +260,24 @@ public class BookPanel extends JPanel {
 		}
 		return tfUAuthor;
 	}
+
 	public JButton getBtnNewButton_1_1_1_1() {
 		if (btnNewButton_1_1_1_1 == null) {
 			btnNewButton_1_1_1_1 = new JButton("\uC0AD\uC81C");
 			btnNewButton_1_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+
 					String findStr = tfUBookNo.getText(); // 찾을 값 (No.)
-					int index = MainData.bookC.selectOne(findStr);  // 삭제할 객체 인덱스 찾기
-					MainData.getBooks().remove(index);      // 객체 삭제
-					List<Book> list = MainData.bookC.search(findStr);
-				     
-					DefaultTableModel model =               // 모델 생성
-							(DefaultTableModel)table.getModel();
-					model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
-			   							
-						for(int i=0; i<list.size(); i++) {  // 해당 값 삭제 되었는지 확인하기. (사실 없어도됨)
-							Book b = list.get(i);
-							String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
-							model.addRow(data);}				
+
+					int result = JOptionPane.showConfirmDialog(BookPanel.this, "도서 정보를 삭제 하시겠습니까?", "confirm",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						int index = MainData.bookC.selectOne(findStr); // 삭제할 객체 인덱스 찾기
+						MainData.getBooks().remove(index); // 객체 삭제
+						List<Book> list = MainData.bookC.search(findStr);
+
+						reTable(); //테이블에 출력
+					}
 				}
 			});
 			btnNewButton_1_1_1_1.setForeground(Color.WHITE);
@@ -297,6 +288,7 @@ public class BookPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_3_1_2() {
 		if (lblNewLabel_3_1_2 == null) {
 			lblNewLabel_3_1_2 = new JLabel("\uC800\uC790");
@@ -306,6 +298,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2;
 	}
+
 	public JTextField getTfUTitle() {
 		if (tfUTitle == null) {
 			tfUTitle = new JTextField();
@@ -314,6 +307,7 @@ public class BookPanel extends JPanel {
 		}
 		return tfUTitle;
 	}
+
 	public JLabel getLblNewLabel_3_1_1_1() {
 		if (lblNewLabel_3_1_1_1 == null) {
 			lblNewLabel_3_1_1_1 = new JLabel("No.");
@@ -323,6 +317,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_1_1;
 	}
+
 	public JTextField getTfUBookNo() {
 		if (tfUBookNo == null) {
 			tfUBookNo = new JTextField();
@@ -333,33 +328,35 @@ public class BookPanel extends JPanel {
 		}
 		return tfUBookNo;
 	}
+
 	public JButton getBtnNewButton_1_1_1() {
 		if (btnNewButton_1_1_1 == null) {
-			btnNewButton_1_1_1 = new JButton("\uC218\uC815");     // 수정 버튼
+			btnNewButton_1_1_1 = new JButton("\uC218\uC815"); // 수정 버튼
 			btnNewButton_1_1_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
-				String findStr = tfUBookNo.getText(); // 수정할 객체를 찾을 검색값(No.)
-				
-				String title  = tfUTitle.getText();         // 수정할 변수 선언 (텍스트 해당 필드에서 불러옴)
-				String author =  tfUAuthor.getText();
-				String sort   = (String) cbUSort.getSelectedItem();
-				String date   = (String) cbUDate.getSelectedItem();
-				
-				int index = MainData.bookC.selectOne(findStr);      // 검색값(No)으로 찾은 객체의 인덱스 번호를 가져오는 메소드.
-			
-				MainData.bookC.update(index, title, author, sort, date);   // 수정할 내용으로 업데이트.
-										     
-				DefaultTableModel model =               // 모델 생성
-						(DefaultTableModel)table.getModel();
-				model.setRowCount(0);                   //기존 표시된 데이터를 모두 삭제
-		   					
-				Book b = MainData.getBooks().get(index);     // 해당 인덱스의 객체를 가져옴.(화면 갱신을 위해)
-				String[] data = {b.getBookNo(),b.getTitle(), b.getAuthor(),"대여현황", b.getSort(), String.format("%s일",b.getDate())};
-				model.addRow(data);   // 해당 내용 model에 출력
-				
-				
+
+					String findStr = tfUBookNo.getText(); // 수정할 객체를 찾을 검색값(No.)
+
+					String title = tfUTitle.getText(); // 수정할 변수 선언 (텍스트 해당 필드에서 불러옴)
+					String author = tfUAuthor.getText();
+					String sort = (String) cbUSort.getSelectedItem();
+					String date = (String) cbUDate.getSelectedItem();
+
+					int result = JOptionPane.showConfirmDialog(BookPanel.this, "도서 정보를 수정 하시겠습니까?", "Confirm",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.CLOSED_OPTION) {
+
+					} else if (result == JOptionPane.YES_OPTION) {
+
+						int index = MainData.bookC.selectOne(findStr); // 검색값(No)으로 찾은 객체의 인덱스 번호를 가져오는 메소드.
+						String msg = MainData.bookC.update(index, title, author, sort, date); // 수정할 내용으로 업데이트.
+						Book b = MainData.getBooks().get(index); // 해당 인덱스의 객체를 가져옴.(화면 갱신을 위해)
+						JOptionPane.showMessageDialog(BookPanel.this, msg);
+						
+						reTable(); //테이블에 출력
+					}
 				}
+
 			});
 			btnNewButton_1_1_1.setForeground(Color.WHITE);
 			btnNewButton_1_1_1.setFont(new Font("굴림", Font.PLAIN, 12));
@@ -369,6 +366,7 @@ public class BookPanel extends JPanel {
 		}
 		return btnNewButton_1_1_1;
 	}
+
 	public JLabel getLblNewLabel_5_1() {
 		if (lblNewLabel_5_1 == null) {
 			lblNewLabel_5_1 = new JLabel("    \uC815 \uBCF4 \uC218 \uC815");
@@ -381,6 +379,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_5_1;
 	}
+
 	public JLabel getLblNewLabel_5_1_1() {
 		if (lblNewLabel_5_1_1 == null) {
 			lblNewLabel_5_1_1 = new JLabel("");
@@ -390,6 +389,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_5_1_1;
 	}
+
 	public JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
@@ -398,33 +398,35 @@ public class BookPanel extends JPanel {
 		}
 		return scrollPane;
 	}
+
 	public JTable getTable() {
+
 		if (table == null) {
 			table = new JTable();
 			table.setBackground(Color.WHITE);
 			table.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					
+
 					int row = table.getSelectedRow();
-					
+
 					tfUBookNo.setText((String) table.getModel().getValueAt(row, 0));
 					tfUTitle.setText((String) table.getModel().getValueAt(row, 1));
 					tfUAuthor.setText((String) table.getModel().getValueAt(row, 2));
-					
-					
 				}
 			});
-			table.setModel(new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"\uB3C4\uC11C\uBC88\uD638", "\uB3C4\uC11C\uBA85", "\uC800\uC790", "\uB300\uC5EC\uD604\uD669", "\uBD84\uB958", "\uB300\uC5EC\uC77C"
-				}
-			));
+
+			table.setModel(new DefaultTableModel(new Object[][] {},
+					new String[] { "\uB3C4\uC11C\uBC88\uD638", "\uB3C4\uC11C\uBA85", "\uC800\uC790",
+							"\uB300\uC5EC\uD604\uD669", "\uBD84\uB958", "\uB300\uC5EC\uC77C" }));
+
+			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer(); // 대여현황 탭 가운데 정렬
+			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+			table.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 		}
 		return table;
 	}
+
 	private JLabel getLblNewLabel_3_2_1() {
 		if (lblNewLabel_3_2_1 == null) {
 			lblNewLabel_3_2_1 = new JLabel("\uBD84\uB958");
@@ -434,6 +436,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_2_1;
 	}
+
 	private JLabel getLblNewLabel_3_1_2_1() {
 		if (lblNewLabel_3_1_2_1 == null) {
 			lblNewLabel_3_1_2_1 = new JLabel("\uB300\uC5EC\uC77C");
@@ -443,6 +446,7 @@ public class BookPanel extends JPanel {
 		}
 		return lblNewLabel_3_1_2_1;
 	}
+
 	private JLabel getLblNewLabel_3_1_1_2() {
 		if (lblNewLabel_3_1_1_2 == null) {
 			lblNewLabel_3_1_1_2 = new JLabel("\uB300\uC5EC\uC77C");
@@ -457,38 +461,56 @@ public class BookPanel extends JPanel {
 		if (cbUDate == null) {
 			cbUDate = new JComboBox();
 			cbUDate.setBackground(Color.WHITE);
-			cbUDate.setModel(new DefaultComboBoxModel(new String[] {"3\uC77C", "7\uC77C"}));
+			cbUDate.setModel(new DefaultComboBoxModel(new String[] { "3\uC77C", "7\uC77C" }));
 			cbUDate.setBounds(360, 451, 148, 23);
 		}
 		return cbUDate;
 	}
+
 	private JComboBox getCbSort() {
 		if (cbSort == null) {
 			cbSort = new JComboBox();
 			cbSort.setBackground(Color.WHITE);
-			cbSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
+			cbSort.setModel(new DefaultComboBoxModel(new String[] { "\uB9CC\uD654", "\uC18C\uC124" }));
 			cbSort.setBounds(288, 74, 125, 23);
 		}
 		return cbSort;
 	}
+
 	private JComboBox getCbUSort() {
 		if (cbUSort == null) {
 			cbUSort = new JComboBox();
 			cbUSort.setBackground(Color.WHITE);
-			cbUSort.setModel(new DefaultComboBoxModel(new String[] {"\uB9CC\uD654", "\uC18C\uC124"}));
+			cbUSort.setModel(new DefaultComboBoxModel(new String[] { "\uB9CC\uD654", "\uC18C\uC124" }));
 			cbUSort.setBounds(360, 418, 148, 23);
 		}
 		return cbUSort;
 	}
-	
 
 	private JComboBox getCbDate() {
 		if (cbDate == null) {
 			cbDate = new JComboBox();
 			cbDate.setBackground(Color.WHITE);
-			cbDate.setModel(new DefaultComboBoxModel(new String[] {"3\uC77C", "7\uC77C"}));
+			cbDate.setModel(new DefaultComboBoxModel(new String[] { "3\uC77C", "7\uC77C" }));
 			cbDate.setBounds(288, 118, 125, 23);
 		}
 		return cbDate;
+	}
+
+	public void reTable() {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();  // 테이블 선언
+		model.setRowCount(0);                                            // 테이블값 초기화
+		for (int j = 0; j < MainData.getBooks().size(); j++) {           // books 의 전체 size만큼 for문을 돌린다.
+			Book b = MainData.getBooks().get(j);                         // books의 j번째 객체를 b변수에 담는다.
+			String BookStatus = "";                                      // 대여현황 변수 선언.
+			if (MainData.checkOutCtrl.getCheckOutAble(b.getBookNo()).equals("대여가능")) {     // 대여현황이 대여가능일경우 "O"로 표시
+				BookStatus = "O";                                                             
+			} else {
+				BookStatus = "X";                                         // 대여현황이 대여가능이 아닐경우 "X"로 표시
+			}
+			String[] data = { b.getBookNo(), b.getTitle(), b.getAuthor(), BookStatus, b.getSort(),  // b변수(books의 j번째 객체)의 해당 값들을 불러와서 data배열에 담는다.
+					String.format("%s일", b.getDate()) };
+			model.addRow(data);    // 해당 배열을 테이블에 출력한다.
+		}
 	}
 }

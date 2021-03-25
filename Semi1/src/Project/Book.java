@@ -3,10 +3,10 @@ package Project;
 public class Book {
 	private int bookNo = 1;	//도서넘버
 	private static int bookNoCnt=0;
-	String title;	//책제목
-	String author;	//저자
-	String sort;	//분류(만화,소설)
-	String date;   //대여가능일
+	private	String title;	//책제목
+	private String author;	//저자
+	private String sort;	//분류(만화,소설)
+	private String date;   //대여가능일
 	
 
 	public Book(String title, String author,String sort,String date) {
